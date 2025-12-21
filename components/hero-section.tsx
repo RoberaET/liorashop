@@ -1,9 +1,6 @@
 "use client"
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import { useLanguage } from "@/lib/language-context"
+import BlurText from "@/components/blur-text"
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -28,9 +25,13 @@ export function HeroSection() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-white mb-4 md:mb-6 text-balance">
             {t.hero.title}
           </h1>
-          <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8 max-w-xl leading-relaxed">
-            {t.hero.description}
-          </p>
+          <BlurText
+            text="Discover your personal style"
+            delay={50}
+            animateBy="words"
+            direction="top"
+            className="text-base md:text-xl text-white/90 mb-6 md:mb-8 max-w-xl leading-relaxed"
+          />
           <div className="flex flex-wrap gap-4">
             <Button size="lg" asChild className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
               <Link href="/category/clothes">
