@@ -8,12 +8,12 @@ export function FeaturedProducts() {
   const featuredProducts = getFeaturedProducts()
 
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
+    <section className="py-16 md:py-24 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
         <div className="flex items-end justify-between mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Bestsellers</h2>
-            <p className="text-muted-foreground max-w-xl">Our most loved products, chosen by customers like you</p>
+            <p className="text-primary-foreground/80 max-w-xl">Our most loved products, chosen by customers like you</p>
           </div>
           <Button variant="ghost" asChild className="hidden md:flex gap-2">
             <Link href="/category/clothes">
