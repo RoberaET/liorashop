@@ -7,6 +7,7 @@ import { getAdminDashboardStatsAction } from "@/app/actions/admin"
 import { useEffect, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts"
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState<any>(null)
@@ -39,7 +40,7 @@ export default function AdminDashboard() {
 
     if (!stats) return <div>Failed to load stats</div>
 
-    const { totalRevenue, totalOrders, totalProducts, recentOrders, salesData, categoryData, lowStockCount } = stats
+    const { totalRevenue, totalOrders, totalProducts, recentOrders, salesData, categoryData, lowStockCount, orderStatusData } = stats
 
     const maxSales = Math.max(...(salesData?.map((d: any) => d._sum.total) || []), 100)
     const categoryColors = ["bg-blue-500", "bg-cyan-500", "bg-sky-500", "bg-indigo-500", "bg-teal-500", "bg-emerald-500"]
@@ -162,7 +163,45 @@ export default function AdminDashboard() {
                 </motion.div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <motion.div variants={item}>
+                    <Card className="border-blue-100 h-full">
+                        <CardHeader>
+                            <CardTitle className="text-slate-800">Order Status</CardTitle>
+                        </CardHeader>
+                        <CardContent className="h-[300px]">
+                            {orderStatusData.length === 0 ? (
+                                <div className="flex h-full items-center justify-center text-slate-400">
+                                    No orders yet
+                                </div>
+                            ) : (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={orderStatusData}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={80}
+                                            paddingAngle={5}
+                                            dataKey="_count.id"
+                                            nameKey="status"
+                                        >
+                                            {orderStatusData.map((entry: any, index: number) => (
+                                                <Cell key={`cell-${index}`} fill={categoryColors[index % categoryColors.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                                            formatter={(value: number, name: string) => [value, name.charAt(0).toUpperCase() + name.slice(1)]}
+                                        />
+                                        <Legend formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            )}
+                        </CardContent>
+                    </Card>
+                </motion.div>
                 <motion.div variants={item}>
                     <Card className="border-blue-100">
                         <CardHeader>

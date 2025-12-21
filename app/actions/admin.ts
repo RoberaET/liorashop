@@ -157,6 +157,14 @@ export async function getAdminDashboardStatsAction() {
             }
         })
 
+        // Get order status distribution
+        const ordersByStatus = await prisma.order.groupBy({
+            by: ['status'],
+            _count: {
+                id: true
+            }
+        })
+
         return {
             stats: {
                 totalRevenue: totalRevenue._sum.total || 0,
@@ -173,7 +181,8 @@ export async function getAdminDashboardStatsAction() {
                     createdAt: order.createdAt
                 })),
                 salesData: recentSales,
-                categoryData: productsByCategory
+                categoryData: productsByCategory,
+                orderStatusData: ordersByStatus
             }
         }
     } catch (error) {
