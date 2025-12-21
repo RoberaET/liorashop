@@ -137,18 +137,42 @@ export async function getAdminDashboardStatsAction() {
         // Get sales for last 7 days
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+        sevenDaysAgo.setHours(0, 0, 0, 0)
 
-        const recentSales = await prisma.order.groupBy({
-            by: ['createdAt'],
-            _sum: {
-                total: true
-            },
+        const recentOrdersForGraph = await prisma.order.findMany({
             where: {
                 createdAt: {
                     gte: sevenDaysAgo
                 }
+            },
+            select: {
+                createdAt: true,
+                total: true
             }
         })
+
+        // Group by date
+        const salesMap = new Map<string, number>()
+
+        // Initialize last 7 days with 0
+        for (let i = 0; i < 7; i++) {
+            const date = new Date()
+            date.setDate(date.getDate() - i)
+            const dateStr = date.toISOString().split('T')[0] // YYYY-MM-DD
+            salesMap.set(dateStr, 0)
+        }
+
+        recentOrdersForGraph.forEach(order => {
+            const dateStr = order.createdAt.toISOString().split('T')[0]
+            if (salesMap.has(dateStr)) {
+                salesMap.set(dateStr, (salesMap.get(dateStr) || 0) + order.total)
+            }
+        })
+
+        // Convert to array and sort by date
+        const salesData = Array.from(salesMap.entries())
+            .map(([date, total]) => ({ date, total }))
+            .sort((a, b) => a.date.localeCompare(b.date))
 
         // Get category distribution
         const productsByCategory = await prisma.product.groupBy({
@@ -181,7 +205,7 @@ export async function getAdminDashboardStatsAction() {
                     status: order.status,
                     createdAt: order.createdAt
                 })),
-                salesData: recentSales,
+                salesData: salesData,
                 categoryData: productsByCategory,
                 orderStatusData: ordersByStatus
             }

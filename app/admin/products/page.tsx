@@ -54,7 +54,7 @@ export default async function AdminProductsPage() {
                                 </TableCell>
                                 <TableCell className="font-semibold text-purple-800">{product.name}</TableCell>
                                 <TableCell className="capitalize text-amber-900 font-medium">{product.category}</TableCell>
-                                <TableCell className="text-emerald-800 font-bold">{formatPrice(product.price)}</TableCell>
+                                <TableCell className="text-green-600 font-bold">{formatPrice(product.price)}</TableCell>
                                 <TableCell>
                                     <span className={product.stock === 0 ? "text-red-700 font-bold" : "text-red-900 font-medium"}>
                                         {product.stock}

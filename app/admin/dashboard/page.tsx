@@ -7,7 +7,7 @@ import { getAdminDashboardStatsAction } from "@/app/actions/admin"
 import { useEffect, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts"
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis } from "recharts"
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState<any>(null)
@@ -146,18 +146,46 @@ export default function AdminDashboard() {
                         <CardHeader>
                             <CardTitle className="text-slate-900 font-bold">Overview</CardTitle>
                         </CardHeader>
-                        <CardContent className="h-[200px] flex items-end justify-between gap-2">
-                            {/* Simplified histogram since we have limited formatted date logic on server */}
-                            {salesData.length === 0 ? <p className="text-slate-400 text-sm m-auto">No sales data</p> : salesData.map((day: any, i: number) => {
-                                const heightPercentage = ((day._sum.total || 0) / maxSales) * 100
-                                return (
-                                    <div key={i} className="w-full bg-blue-500 hover:bg-blue-600 rounded-t-sm relative group transition-all" style={{ height: `${heightPercentage || 5}%` }}>
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md z-10">
-                                            {formatPrice(day._sum.total || 0)}
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                        <CardContent className="h-[300px]">
+                            {salesData.length === 0 ? (
+                                <div className="flex h-full items-center justify-center text-slate-400">
+                                    No sales data available
+                                </div>
+                            ) : (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={salesData}>
+                                        <XAxis
+                                            dataKey="date"
+                                            stroke="#888888"
+                                            fontSize={12}
+                                            tickLine={false}
+                                            axisLine={false}
+                                            tickFormatter={(value) => {
+                                                if (!value) return ""
+                                                const date = new Date(value)
+                                                return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                                            }}
+                                        />
+                                        <YAxis
+                                            stroke="#888888"
+                                            fontSize={12}
+                                            tickLine={false}
+                                            axisLine={false}
+                                            tickFormatter={(value) => `$${value}`}
+                                        />
+                                        <Tooltip
+                                            cursor={{ fill: 'transparent' }}
+                                            contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#1e293b' }}
+                                            formatter={(value: number) => [formatPrice(value), "Total"]}
+                                            labelFormatter={(label) => {
+                                                if (!label) return ""
+                                                return new Date(label).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                                            }}
+                                        />
+                                        <Bar dataKey="_sum.total" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            )}
                         </CardContent>
                     </Card>
                 </motion.div>
