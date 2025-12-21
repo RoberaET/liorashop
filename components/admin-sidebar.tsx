@@ -40,9 +40,9 @@ export function AdminSidebar() {
     ]
 
     return (
-        <div className="flex flex-col h-screen border-r bg-muted/10 w-64">
+        <div className="flex flex-col h-screen border-r bg-slate-900 text-slate-50 w-64 shadow-xl">
             <div className="p-6">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent animate-pulse uppercase">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent uppercase tracking-wider">
                     Liora Admin
                 </h1>
             </div>
@@ -54,8 +54,11 @@ export function AdminSidebar() {
                             key={route.href}
                             href={route.href}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                                pathname === route.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                                "hover:bg-blue-800/50 hover:translate-x-1",
+                                pathname === route.href
+                                    ? "bg-blue-600 text-white shadow-md shadow-blue-900/20"
+                                    : "text-slate-400 hover:text-slate-100",
                             )}
                         >
                             <Icon className="h-4 w-4" />
@@ -64,8 +67,8 @@ export function AdminSidebar() {
                     )
                 })}
             </div>
-            <div className="p-4 border-t">
-                <Button variant="ghost" className="w-full justify-start gap-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={handleLogout}>
+            <div className="p-4 border-t border-slate-800">
+                <Button variant="ghost" className="w-full justify-start gap-2 text-red-400 hover:text-red-300 hover:bg-red-950/30" onClick={handleLogout}>
                     <LogOut className="h-4 w-4" />
                     Logout
                 </Button>

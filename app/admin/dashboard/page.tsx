@@ -6,6 +6,7 @@ import { Package, ShoppingCart, TrendingUp } from "lucide-react"
 import { getAdminDashboardStatsAction } from "@/app/actions/admin"
 import { useEffect, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { motion } from "framer-motion"
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState<any>(null)
@@ -41,122 +42,160 @@ export default function AdminDashboard() {
     const { totalRevenue, totalOrders, totalProducts, recentOrders, salesData, categoryData, lowStockCount } = stats
 
     const maxSales = Math.max(...(salesData?.map((d: any) => d._sum.total) || []), 100)
-    const categoryColors = ["bg-red-500", "bg-blue-500", "bg-pink-500", "bg-purple-500", "bg-orange-500", "bg-green-500"]
+    const categoryColors = ["bg-blue-500", "bg-cyan-500", "bg-sky-500", "bg-indigo-500", "bg-teal-500", "bg-emerald-500"]
+
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    }
+
+    const item = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0 }
+    }
 
     return (
-        <div className="space-y-8">
+        <motion.div
+            className="space-y-8"
+            variants={container}
+            initial="hidden"
+            animate="show"
+        >
             <div>
-                <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-                <p className="text-muted-foreground">Overview of your store's performance.</p>
+                <motion.h2 variants={item} className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</motion.h2>
+                <motion.p variants={item} className="text-slate-500">Overview of your store's performance.</motion.p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{formatPrice(totalRevenue)}</div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Orders</CardTitle>
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{totalOrders}</div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Products</CardTitle>
-                        <Package className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{totalProducts}</div>
-                    </CardContent>
-                </Card>
+                <motion.div variants={item}>
+                    <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-gradient-to-br from-white to-blue-50/50">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium text-slate-600">Total Revenue</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-blue-600" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-blue-900">{formatPrice(totalRevenue)}</div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+                <motion.div variants={item}>
+                    <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-gradient-to-br from-white to-blue-50/50">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium text-slate-600">Orders</CardTitle>
+                            <ShoppingCart className="h-4 w-4 text-blue-600" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-blue-900">{totalOrders}</div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+                <motion.div variants={item}>
+                    <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-gradient-to-br from-white to-blue-50/50">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium text-slate-600">Products</CardTitle>
+                            <Package className="h-4 w-4 text-blue-600" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-blue-900">{totalProducts}</div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                    <CardHeader>
-                        <CardTitle>Recent Orders</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {recentOrders.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">No orders yet.</p>
-                        ) : (
-                            <div className="space-y-8">
-                                {recentOrders.map((order: any) => (
-                                    <div key={order.id} className="flex items-center">
-                                        <div className="space-y-1">
-                                            <p className="text-sm font-medium leading-none">
-                                                {order.shippingAddress.fullName}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {order.shippingAddress.email}
-                                            </p>
-                                        </div>
-                                        <div className="ml-auto font-medium">+{formatPrice(order.total)}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-
-                <Card className="col-span-3">
-                    <CardHeader>
-                        <CardTitle>Overview</CardTitle>
-                    </CardHeader>
-                    <CardContent className="h-[200px] flex items-end justify-between gap-2">
-                        {/* Simplified histogram since we have limited formatted date logic on server */}
-                        {salesData.length === 0 ? <p className="text-muted-foreground text-sm m-auto">No sales data</p> : salesData.map((day: any, i: number) => {
-                            const heightPercentage = ((day._sum.total || 0) / maxSales) * 100
-                            return (
-                                <div key={i} className="w-full bg-primary/20 hover:bg-primary/40 rounded-t-md relative group transition-all" style={{ height: `${heightPercentage || 5}%` }}>
-                                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
-                                        {formatPrice(day._sum.total || 0)}
-                                    </div>
+                <motion.div variants={item} className="col-span-4">
+                    <Card className="border-blue-100 h-full">
+                        <CardHeader>
+                            <CardTitle className="text-slate-800">Recent Orders</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {recentOrders.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center p-8 text-slate-400">
+                                    <ShoppingCart className="h-10 w-10 mb-2 opacity-20" />
+                                    <p className="text-sm">No orders yet.</p>
                                 </div>
-                            )
-                        })}
-                    </CardContent>
-                </Card>
+                            ) : (
+                                <div className="space-y-8">
+                                    {recentOrders.map((order: any) => (
+                                        <div key={order.id} className="flex items-center">
+                                            <div className="space-y-1">
+                                                <p className="text-sm font-medium leading-none text-slate-900">
+                                                    {order.shippingAddress.fullName}
+                                                </p>
+                                                <p className="text-sm text-slate-500">
+                                                    {order.shippingAddress.email}
+                                                </p>
+                                            </div>
+                                            <div className="ml-auto font-medium text-blue-700">+{formatPrice(order.total)}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </motion.div>
+
+                <motion.div variants={item} className="col-span-3">
+                    <Card className="border-blue-100 h-full">
+                        <CardHeader>
+                            <CardTitle className="text-slate-800">Overview</CardTitle>
+                        </CardHeader>
+                        <CardContent className="h-[200px] flex items-end justify-between gap-2">
+                            {/* Simplified histogram since we have limited formatted date logic on server */}
+                            {salesData.length === 0 ? <p className="text-slate-400 text-sm m-auto">No sales data</p> : salesData.map((day: any, i: number) => {
+                                const heightPercentage = ((day._sum.total || 0) / maxSales) * 100
+                                return (
+                                    <div key={i} className="w-full bg-blue-100 hover:bg-blue-300 rounded-t-sm relative group transition-all" style={{ height: `${heightPercentage || 5}%` }}>
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md z-10">
+                                            {formatPrice(day._sum.total || 0)}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </CardContent>
+                    </Card>
+                </motion.div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Category Distribution</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex items-center justify-center">
-                        <div className="flex gap-4 flex-wrap justify-center">
-                            {categoryData.map((cat: any, i: number) => (
-                                <div key={cat.category} className="flex items-center gap-2">
-                                    <div className={`w-3 h-3 rounded-full ${categoryColors[i % categoryColors.length]}`} />
-                                    <span className="text-sm font-medium capitalize">{cat.category} ({cat._count.id})</span>
-                                    <span className="text-xs text-muted-foreground">{Math.round((cat._count.id / totalProducts) * 100)}%</span>
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Inventory Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-center py-4">
-                            <div className="text-3xl font-bold text-destructive">{lowStockCount}</div>
-                            <p className="text-muted-foreground">Low Stock Products</p>
-                        </div>
-                    </CardContent>
-                </Card>
+                <motion.div variants={item}>
+                    <Card className="border-blue-100">
+                        <CardHeader>
+                            <CardTitle className="text-slate-800">Category Distribution</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex items-center justify-center">
+                            <div className="flex gap-4 flex-wrap justify-center p-4">
+                                {categoryData.map((cat: any, i: number) => (
+                                    <div key={cat.category} className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
+                                        <div className={`w-2.5 h-2.5 rounded-full ${categoryColors[i % categoryColors.length]}`} />
+                                        <span className="text-sm font-medium capitalize text-slate-700">{cat.category} ({cat._count.id})</span>
+                                        <span className="text-xs text-slate-400">|</span>
+                                        <span className="text-xs font-semibold text-blue-700">{Math.round((cat._count.id / totalProducts) * 100)}%</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+                <motion.div variants={item}>
+                    <Card className="border-blue-100 bg-gradient-to-br from-white to-red-50/30">
+                        <CardHeader>
+                            <CardTitle className="text-slate-800">Inventory Status</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-center py-6">
+                                <div className="text-4xl font-extrabold text-red-500 mb-2">{lowStockCount}</div>
+                                <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">Low Stock Products</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             </div>
-        </div>
+        </motion.div>
     )
 }
