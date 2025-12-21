@@ -260,10 +260,10 @@ export const products: Product[] = [
 ]
 
 export const categories = [
-  { id: "clothes", name: "Clothes", icon: "shirt", count: 4 },
-  { id: "shoes", name: "Shoes", icon: "footprints", count: 4 },
-  { id: "cosmetics", name: "Cosmetics", icon: "sparkles", count: 4 },
-  { id: "perfumes", name: "Perfumes", icon: "spray-can", count: 4 },
+  { id: "clothes", name: "Clothes", icon: "shirt", count: 4, image: "/category-clothes.png" },
+  { id: "shoes", name: "Shoes", icon: "footprints", count: 4, image: "/category-shoes.png" },
+  { id: "cosmetics", name: "Cosmetics", icon: "sparkles", count: 4, image: "/category-cosmetics.png" },
+  { id: "perfumes", name: "Perfumes", icon: "spray-can", count: 4, image: "/king1.jpg" },
 ] as const
 
 export function getProductsByCategory(category: string): Product[] {

@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { getProductsByCategory, categories } from "@/lib/data"
+// import { getProductsByCategory, categories } from "@/lib/data"
+import { getProductsByCategoryAction } from "@/app/actions/product"
+import { categories } from "@/lib/data" // Keep categories for metadata for now
 import { CategoryPageContent } from "@/components/category-page-content"
 
 interface CategoryPageProps {
@@ -35,7 +37,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound()
   }
 
-  const products = getProductsByCategory(slug)
+  const { products } = await getProductsByCategoryAction(slug)
+
+  if (!products) {
+    return <div>Failed to load products</div>
+  }
 
   // JSON-LD for Breadcrumbs
   const jsonLd = {

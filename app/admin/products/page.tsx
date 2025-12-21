@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 
 import Image from "next/image"
 import {
@@ -9,11 +9,15 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { products } from "@/lib/data"
+// import { products } from "@/lib/data"
+import { getProductsAction } from "@/app/actions/product"
 import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 
-export default function AdminProductsPage() {
+export default async function AdminProductsPage() {
+    const { products } = await getProductsAction()
+
+    if (!products) return <div>Failed to load products</div>
     return (
         <div className="space-y-6">
             <div>
@@ -34,7 +38,7 @@ export default function AdminProductsPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {products.map((product) => (
+                        {products.map((product: any) => (
                             <TableRow key={product.id}>
                                 <TableCell>
                                     <div className="relative h-12 w-12 rounded-md overflow-hidden">

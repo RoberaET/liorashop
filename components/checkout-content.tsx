@@ -23,7 +23,7 @@ import { useStore } from "@/lib/store"
 import { formatPrice } from "@/lib/utils"
 import type { Order } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
-import { db } from "@/lib/db"
+import { createOrderAction } from "@/app/actions/order"
 import { useLanguage } from "@/lib/language-context"
 
 const COUPONS: { [key: string]: number } = {
@@ -161,29 +161,47 @@ export function CheckoutContent() {
     // Check if user is logged in
     const userId = user ? user.id : "guest"
 
-    const newOrder: Order = {
-      id: Math.random().toString(36).substring(2, 9).toUpperCase(),
-      items: [...cart],
-      total: total,
-      status: "confirmed",
-      createdAt: new Date(),
-      shippingAddress: {
-        fullName: shippingForm.fullName,
-        email: shippingForm.email,
-        street: shippingForm.street,
-        city: shippingForm.city,
-        state: shippingForm.state,
-        zipCode: shippingForm.zipCode,
-        country: shippingForm.country,
-        phone: shippingForm.phone,
-      }
+    // Construct shipping address object
+    const shippingAddress = {
+      fullName: shippingForm.fullName,
+      email: shippingForm.email,
+      street: shippingForm.street,
+      city: shippingForm.city,
+      state: shippingForm.state,
+      zipCode: shippingForm.zipCode,
+      country: shippingForm.country,
+      phone: shippingForm.phone,
     }
 
-    addOrder(newOrder)
+    try {
+      if (user) {
+        // Use Server Action for logged in users
+        const result = await createOrderAction(user.id, cart, total, shippingAddress)
+        if (result.error || !result.order) throw new Error(result.error)
+        // Frontend state update can use the returned order
+        const addOrder = useStore.getState().addOrder
+        addOrder(result.order)
+      } else {
+        // Guest checkout (fallback to local state for now, or implement guest server action later)
+        // For now, let's just update local store effectively mocking it for guests
+        const newOrder: Order = {
+          id: Math.random().toString(36).substring(2, 9).toUpperCase(),
+          items: [...cart],
+          total: total,
+          status: "confirmed",
+          createdAt: new Date(),
+          shippingAddress
+        }
+        const addOrder = useStore.getState().addOrder
+        addOrder(newOrder)
+      }
 
-    // Save to DB
-    if (user) {
-      db.saveOrder(user.id, newOrder)
+      clearCart()
+      router.push("/checkout/success")
+
+    } catch (error) {
+      console.error("Checkout error:", error)
+      // handle error
     }
 
     clearCart()

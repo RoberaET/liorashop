@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { db } from "@/lib/db"
+// import { db } from "@/lib/db"
+import { getAllUsersAction, deleteUserAction } from "@/app/actions/admin"
 import { RegisteredUser } from "@/lib/types"
 import {
     Table,
@@ -22,14 +23,19 @@ export default function AdminCustomersPage() {
     const [searchQuery, setSearchQuery] = useState("")
 
     useEffect(() => {
-        // Load users from DB
-        const allUsers = db.getAllUsers()
-        setUsers(allUsers)
+        // Load users from Server Action
+        const loadUsers = async () => {
+            const result = await getAllUsersAction()
+            if (result.users) {
+                setUsers(result.users)
+            }
+        }
+        loadUsers()
     }, [])
 
     const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+        user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
     const formatDate = (date: Date | string) => {
@@ -39,8 +45,8 @@ export default function AdminCustomersPage() {
 
     const handleDeleteUser = async (userId: string) => {
         if (confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
-            const success = await db.deleteUser(userId)
-            if (success) {
+            const result = await deleteUserAction(userId)
+            if (result.success) {
                 setUsers(users.filter(u => u.id !== userId))
             } else {
                 alert("Failed to delete user")

@@ -13,7 +13,8 @@ import { useStore } from "@/lib/store"
 import { useMounted } from "@/hooks/use-mounted"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
-import { db } from "@/lib/db"
+// import { db } from "@/lib/db" 
+import { getUserOrdersAction, cancelOrderAction } from "@/app/actions/order"
 
 export function OrdersContent() {
     const router = useRouter()
@@ -28,9 +29,12 @@ export function OrdersContent() {
         if (!isLoading && !user) {
             router.push("/login")
         } else if (user) {
-            // Force refresh orders from DB to ensure persistence is visible
-            const userOrders = db.getOrders(user.id)
-            useStore.getState().setOrders(userOrders)
+            // Load orders from Server Action
+            getUserOrdersAction(user.id).then(res => {
+                if (res.orders) {
+                    useStore.getState().setOrders(res.orders)
+                }
+            })
         }
     }, [user, isLoading, router])
 
@@ -48,11 +52,21 @@ export function OrdersContent() {
         )
     }
 
-    const handleCancelOrder = (orderId: string) => {
-        updateOrderStatus(orderId, "cancelled")
-        if (user) {
-            db.updateOrderStatus(user.id, orderId, "cancelled")
+    const handleCancelOrder = async (orderId: string) => {
+        if (!user) return
+
+        const result = await cancelOrderAction(orderId, user.id)
+        if (result.error) {
+            toast({
+                title: "Error",
+                description: result.error,
+                variant: "destructive"
+            })
+            return
         }
+
+        updateOrderStatus(orderId, "cancelled")
+
         toast({
             title: "Order Cancelled",
             description: "Your order has been successfully cancelled.",

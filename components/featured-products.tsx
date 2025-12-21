@@ -1,11 +1,14 @@
 import { ProductCard } from "@/components/product-card"
-import { getFeaturedProducts } from "@/lib/data"
+// import { getFeaturedProducts } from "@/lib/data"
+import { getFeaturedProductsAction } from "@/app/actions/product"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 
-export function FeaturedProducts() {
-  const featuredProducts = getFeaturedProducts()
+export async function FeaturedProducts() {
+  const { products: featuredProducts } = await getFeaturedProductsAction()
+
+  if (!featuredProducts) return null
 
   return (
     <section className="py-16 md:py-24 bg-primary text-primary-foreground">
@@ -24,7 +27,7 @@ export function FeaturedProducts() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {featuredProducts.map((product) => (
+          {featuredProducts.map((product: any) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

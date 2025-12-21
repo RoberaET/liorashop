@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
 
 export function Footer() {

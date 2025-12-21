@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useStore } from "@/lib/store"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
@@ -209,9 +210,16 @@ export function Navbar() {
             {currentUser ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="hidden md:flex">
-                    <User className="h-5 w-5" />
-                    <span className="sr-only">{t.navbar.account}</span>
+                  <Button variant="ghost" size="icon" className="hidden md:flex rounded-full">
+                    <Avatar className="h-8 w-8 hover:opacity-80 transition-opacity">
+                      {currentUser.image ? (
+                        <AvatarImage src={currentUser.image} alt={currentUser.name} className="object-cover" />
+                      ) : (
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                          {currentUser.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { getProductById, products } from "@/lib/data"
+// import { getProductById, products } from "@/lib/data"
+import { getProductByIdAction, getProductsByCategoryAction } from "@/app/actions/product"
 import { ProductDetails } from "@/components/product-details"
 
 interface ProductPageProps {
@@ -10,7 +11,7 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps) {
   const { id } = await params
-  const product = getProductById(id)
+  const { product } = await getProductByIdAction(id)
 
   if (!product) {
     return { title: "Product Not Found" }
@@ -27,13 +28,14 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params
-  const product = getProductById(id)
+  const { product } = await getProductByIdAction(id)
 
   if (!product) {
     notFound()
   }
 
-  const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4)
+  const { products: categoryProducts } = await getProductsByCategoryAction(product.category)
+  const relatedProducts = categoryProducts?.filter((p: any) => p.id !== product.id).slice(0, 4) || []
 
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)

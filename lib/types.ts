@@ -42,6 +42,7 @@ export interface User {
   id: string
   name: string
   email: string
+  image?: string | null
   avatar?: string
   role: "admin" | "user"
   addresses: Address[]
@@ -63,6 +64,7 @@ export interface Order {
 }
 
 export interface Address {
+  id?: string
   fullName: string
   email: string
   street: string

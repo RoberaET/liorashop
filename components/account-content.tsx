@@ -9,7 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/auth-context"
 import { useStore } from "@/lib/store"
-import { db } from "@/lib/db"
+// import { db } from "@/lib/db"
+import { getUserOrdersAction } from "@/app/actions/order"
 import { formatPrice } from "@/lib/utils"
 import { Order } from "@/lib/types"
 import { useState } from "react"
@@ -17,7 +18,7 @@ import { Badge } from "@/components/ui/badge"
 
 export function AccountContent() {
   const router = useRouter()
-  const { user, logout, isLoading } = useAuth()
+  const { user, logout, isLoading, updateProfilePicture } = useAuth()
   const [recentOrders, setRecentOrders] = useState<Order[]>([])
   const wishlist = useStore((state) => state.wishlist)
 
@@ -26,8 +27,11 @@ export function AccountContent() {
       router.push("/login")
     } else if (user) {
       // Fetch recent orders
-      const orders = db.getOrders(user.id)
-      setRecentOrders(orders.slice(0, 3)) // Get top 3
+      getUserOrdersAction(user.id).then(res => {
+        if (res.orders) {
+          setRecentOrders(res.orders.slice(0, 3))
+        }
+      })
     }
   }, [user, isLoading, router])
 
@@ -75,11 +79,45 @@ export function AccountContent() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
-          <Avatar className="h-16 w-16">
-            <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-              {user.name.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative group">
+            <Avatar className="h-16 w-16">
+              {user.image ? (
+                <AvatarFallback className="bg-transparent">
+                  <div className="relative h-full w-full">
+                    <img src={user.image} alt={user.name} className="h-full w-full object-cover rounded-full" />
+                  </div>
+                </AvatarFallback>
+              ) : (
+                <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+                  {user.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <label htmlFor="profile-upload" className="absolute bottom-0 right-0 bg-primary text-primary-foreground p-1 rounded-full cursor-pointer hover:bg-primary/90 transition-colors shadow-sm">
+              <Settings className="h-3 w-3" />
+              <span className="sr-only">Upload Photo</span>
+            </label>
+            <input
+              id="profile-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file) {
+                  const reader = new FileReader()
+                  reader.onloadend = () => {
+                    const base64 = reader.result as string
+                    // updateProfilePicture is now available in useAuth
+                    // We need to cast useAuth to include it if types aren't fully updated or just use it
+                    // @ts-ignore
+                    updateProfilePicture(base64)
+                  }
+                  reader.readAsDataURL(file)
+                }
+              }}
+            />
+          </div>
           <div className="flex-1">
             <h1 className="text-2xl font-serif font-bold">{user.name}</h1>
             <p className="text-muted-foreground">{user.email}</p>
