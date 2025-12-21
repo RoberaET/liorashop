@@ -29,12 +29,12 @@ export default async function AdminProductsPage() {
                 <Table>
                     <TableHeader>
                         <TableRow className="border-slate-200 hover:bg-slate-50">
-                            <TableHead className="w-[80px] text-slate-900 font-bold">Image</TableHead>
-                            <TableHead className="text-purple-900 font-bold">Name</TableHead>
-                            <TableHead className="text-amber-900 font-bold">Category</TableHead>
-                            <TableHead className="text-emerald-900 font-bold">Price</TableHead>
-                            <TableHead className="text-red-900 font-bold">Stock</TableHead>
-                            <TableHead className="text-slate-900 font-bold">Status</TableHead>
+                            <TableHead className="w-[80px] text-slate-950 font-extrabold">Image</TableHead>
+                            <TableHead className="text-purple-950 font-extrabold">Name</TableHead>
+                            <TableHead className="text-amber-950 font-extrabold">Category</TableHead>
+                            <TableHead className="text-emerald-950 font-extrabold">Price</TableHead>
+                            <TableHead className="text-red-950 font-extrabold">Stock</TableHead>
+                            <TableHead className="text-slate-950 font-extrabold">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -47,19 +47,21 @@ export default async function AdminProductsPage() {
                                             alt={product.name}
                                             fill
                                             className="object-cover"
+                                            sizes="48px"
+                                            loading="lazy"
                                         />
                                     </div>
                                 </TableCell>
-                                <TableCell className="font-semibold text-purple-700">{product.name}</TableCell>
-                                <TableCell className="capitalize text-amber-800 font-medium">{product.category}</TableCell>
-                                <TableCell className="text-emerald-700 font-bold">{formatPrice(product.price)}</TableCell>
+                                <TableCell className="font-semibold text-purple-800">{product.name}</TableCell>
+                                <TableCell className="capitalize text-amber-900 font-medium">{product.category}</TableCell>
+                                <TableCell className="text-emerald-800 font-bold">{formatPrice(product.price)}</TableCell>
                                 <TableCell>
-                                    <span className={product.stock === 0 ? "text-red-600 font-bold" : "text-red-800 font-medium"}>
+                                    <span className={product.stock === 0 ? "text-red-700 font-bold" : "text-red-900 font-medium"}>
                                         {product.stock}
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    <Badge className={product.stock > 0 ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"}>
+                                    <Badge className={product.stock > 0 ? "bg-emerald-700 hover:bg-emerald-800" : "bg-red-700 hover:bg-red-800"}>
                                         {product.stock > 0 ? "Active" : "Out of Stock"}
                                     </Badge>
                                 </TableCell>

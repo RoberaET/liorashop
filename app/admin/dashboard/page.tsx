@@ -76,33 +76,33 @@ export default function AdminDashboard() {
                 <motion.div variants={item}>
                     <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-slate-600">Total Revenue</CardTitle>
-                            <TrendingUp className="h-4 w-4 text-emerald-600" />
+                            <CardTitle className="text-sm font-bold text-slate-700">Total Revenue</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-emerald-700" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-emerald-700">{formatPrice(totalRevenue)}</div>
+                            <div className="text-2xl font-extrabold text-emerald-800">{formatPrice(totalRevenue)}</div>
                         </CardContent>
                     </Card>
                 </motion.div>
                 <motion.div variants={item}>
                     <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-slate-600">Orders</CardTitle>
-                            <ShoppingCart className="h-4 w-4 text-orange-600" />
+                            <CardTitle className="text-sm font-bold text-slate-700">Orders</CardTitle>
+                            <ShoppingCart className="h-4 w-4 text-orange-700" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-700">{totalOrders}</div>
+                            <div className="text-2xl font-extrabold text-orange-800">{totalOrders}</div>
                         </CardContent>
                     </Card>
                 </motion.div>
                 <motion.div variants={item}>
                     <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-slate-600">Products</CardTitle>
-                            <Package className="h-4 w-4 text-blue-800" />
+                            <CardTitle className="text-sm font-bold text-slate-700">Products</CardTitle>
+                            <Package className="h-4 w-4 text-blue-900" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{totalProducts}</div>
+                            <div className="text-2xl font-extrabold text-blue-950">{totalProducts}</div>
                         </CardContent>
                     </Card>
                 </motion.div>
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
                 <motion.div variants={item} className="col-span-4">
                     <Card className="border-blue-100 h-full bg-white">
                         <CardHeader>
-                            <CardTitle className="text-slate-800">Recent Orders</CardTitle>
+                            <CardTitle className="text-slate-900 font-bold">Recent Orders</CardTitle>
                         </CardHeader>
                         <CardContent>
                             {recentOrders.length === 0 ? (
@@ -125,14 +125,14 @@ export default function AdminDashboard() {
                                     {recentOrders.map((order: any) => (
                                         <div key={order.id} className="flex items-center">
                                             <div className="space-y-1">
-                                                <p className="text-sm font-medium leading-none text-slate-900">
+                                                <p className="text-sm font-bold leading-none text-slate-900">
                                                     {order.shippingAddress.fullName}
                                                 </p>
-                                                <p className="text-sm text-slate-500">
+                                                <p className="text-sm text-slate-600">
                                                     {order.shippingAddress.email}
                                                 </p>
                                             </div>
-                                            <div className="ml-auto font-medium text-blue-700">+{formatPrice(order.total)}</div>
+                                            <div className="ml-auto font-bold text-emerald-700">+{formatPrice(order.total)}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -144,15 +144,15 @@ export default function AdminDashboard() {
                 <motion.div variants={item} className="col-span-3">
                     <Card className="border-blue-100 h-full bg-white">
                         <CardHeader>
-                            <CardTitle className="text-slate-800">Overview</CardTitle>
+                            <CardTitle className="text-slate-900 font-bold">Overview</CardTitle>
                         </CardHeader>
                         <CardContent className="h-[200px] flex items-end justify-between gap-2">
                             {/* Simplified histogram since we have limited formatted date logic on server */}
                             {salesData.length === 0 ? <p className="text-slate-400 text-sm m-auto">No sales data</p> : salesData.map((day: any, i: number) => {
                                 const heightPercentage = ((day._sum.total || 0) / maxSales) * 100
                                 return (
-                                    <div key={i} className="w-full bg-blue-100 hover:bg-blue-300 rounded-t-sm relative group transition-all" style={{ height: `${heightPercentage || 5}%` }}>
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md z-10">
+                                    <div key={i} className="w-full bg-blue-500 hover:bg-blue-600 rounded-t-sm relative group transition-all" style={{ height: `${heightPercentage || 5}%` }}>
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md z-10">
                                             {formatPrice(day._sum.total || 0)}
                                         </div>
                                     </div>
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
                 <motion.div variants={item}>
                     <Card className="border-blue-100 h-full bg-white">
                         <CardHeader>
-                            <CardTitle className="text-slate-800">Order Status</CardTitle>
+                            <CardTitle className="text-slate-900 font-bold">Order Status</CardTitle>
                         </CardHeader>
                         <CardContent className="h-[300px]">
                             {orderStatusData.length === 0 ? (
@@ -192,10 +192,10 @@ export default function AdminDashboard() {
                                             ))}
                                         </Pie>
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                                            contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#1e293b' }}
                                             formatter={(value: number, name: string) => [value, name.charAt(0).toUpperCase() + name.slice(1)]}
                                         />
-                                        <Legend formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)} />
+                                        <Legend formatter={(value) => <span className="text-slate-700 font-medium">{value.charAt(0).toUpperCase() + value.slice(1)}</span>} />
                                     </PieChart>
                                 </ResponsiveContainer>
                             )}
@@ -205,16 +205,16 @@ export default function AdminDashboard() {
                 <motion.div variants={item}>
                     <Card className="border-blue-100 bg-white">
                         <CardHeader>
-                            <CardTitle className="text-slate-800">Category Distribution</CardTitle>
+                            <CardTitle className="text-slate-900 font-bold">Category Distribution</CardTitle>
                         </CardHeader>
                         <CardContent className="flex items-center justify-center">
                             <div className="flex gap-4 flex-wrap justify-center p-4">
                                 {categoryData.map((cat: any, i: number) => (
-                                    <div key={cat.category} className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
+                                    <div key={cat.category} className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
                                         <div className={`w-2.5 h-2.5 rounded-full ${categoryColors[i % categoryColors.length]}`} />
-                                        <span className="text-sm font-medium capitalize text-slate-700">{cat.category} ({cat._count.id})</span>
+                                        <span className="text-sm font-semibold capitalize text-slate-800">{cat.category} ({cat._count.id})</span>
                                         <span className="text-xs text-slate-400">|</span>
-                                        <span className="text-xs font-semibold text-slate-900">{Math.round((cat._count.id / totalProducts) * 100)}%</span>
+                                        <span className="text-xs font-bold text-slate-900">{Math.round((cat._count.id / totalProducts) * 100)}%</span>
                                     </div>
                                 ))}
                             </div>
@@ -224,12 +224,12 @@ export default function AdminDashboard() {
                 <motion.div variants={item}>
                     <Card className="border-blue-100 bg-white">
                         <CardHeader>
-                            <CardTitle className="text-slate-800">Inventory Status</CardTitle>
+                            <CardTitle className="text-slate-900 font-bold">Inventory Status</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-center py-6">
-                                <div className="text-4xl font-extrabold text-red-500 mb-2">{lowStockCount}</div>
-                                <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">Low Stock Products</p>
+                                <div className="text-4xl font-extrabold text-red-600 mb-2">{lowStockCount}</div>
+                                <p className="text-sm font-bold text-slate-700 uppercase tracking-wide">Low Stock Products</p>
                             </div>
                         </CardContent>
                     </Card>

@@ -164,7 +164,7 @@ export default function AdminCustomersPage() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-slate-200"
+                                                            className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 font-medium"
                                                             onClick={() => handleResetPassword(user.id)}
                                                         >
                                                             Reset Password
