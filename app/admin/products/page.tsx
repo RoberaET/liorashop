@@ -21,25 +21,25 @@ export default async function AdminProductsPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight text-blue-950">Products</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-slate-900">Products</h2>
                 <p className="text-slate-600">Manage your product catalog.</p>
             </div>
 
-            <div className="border border-slate-200 rounded-md bg-white">
+            <div className="border border-slate-200 rounded-lg bg-white shadow-sm overflow-hidden">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-slate-50">
                         <TableRow className="border-slate-200 hover:bg-slate-50">
-                            <TableHead className="w-[80px] text-slate-950 font-extrabold">Image</TableHead>
-                            <TableHead className="text-purple-950 font-extrabold">Name</TableHead>
-                            <TableHead className="text-amber-950 font-extrabold">Category</TableHead>
-                            <TableHead className="text-emerald-950 font-extrabold">Price</TableHead>
-                            <TableHead className="text-red-950 font-extrabold">Stock</TableHead>
-                            <TableHead className="text-slate-950 font-extrabold">Status</TableHead>
+                            <TableHead className="w-[80px] text-slate-900 font-extrabold">Image</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Name</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Category</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Price</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Stock</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {products.map((product: any) => (
-                            <TableRow key={product.id} className="border-slate-200 hover:bg-slate-50">
+                            <TableRow key={product.id} className="border-slate-100 hover:bg-slate-50 transition-colors">
                                 <TableCell>
                                     <div className="relative h-12 w-12 rounded-md overflow-hidden border border-slate-200">
                                         <Image

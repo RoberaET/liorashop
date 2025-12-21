@@ -100,20 +100,20 @@ export default function AdminOrdersPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight text-orange-900">Orders</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-slate-900">Orders</h2>
                 <p className="text-slate-600">Manage and update customer orders.</p>
             </div>
 
-            <div className="border border-slate-200 rounded-md bg-white">
+            <div className="border border-slate-200 rounded-lg bg-white shadow-sm overflow-hidden">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-slate-50">
                         <TableRow className="border-slate-200 hover:bg-slate-50">
-                            <TableHead className="text-orange-900 font-bold">Order ID</TableHead>
-                            <TableHead className="text-purple-900 font-bold">Customer</TableHead>
-                            <TableHead className="text-amber-900 font-bold">Date</TableHead>
-                            <TableHead className="text-emerald-900 font-bold">Total</TableHead>
-                            <TableHead className="text-slate-900 font-bold">Status</TableHead>
-                            <TableHead className="text-slate-900 font-bold">Actions</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Order ID</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Customer</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Date</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Total</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Status</TableHead>
+                            <TableHead className="text-slate-900 font-extrabold">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -131,16 +131,16 @@ export default function AdminOrdersPage() {
                             </TableRow>
                         ) : (
                             orders.map((order) => (
-                                <TableRow key={order.id} className="border-slate-200 hover:bg-slate-50">
-                                    <TableCell className="font-mono text-orange-700 font-medium">{order.id}</TableCell>
+                                <TableRow key={order.id} className="border-slate-100 hover:bg-slate-50 transition-colors">
+                                    <TableCell className="font-mono text-orange-700 font-bold">{order.id}</TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span className="font-semibold text-purple-700">{order.shippingAddress.fullName}</span>
+                                            <span className="font-bold text-purple-800">{order.shippingAddress.fullName}</span>
                                             <span className="text-xs text-slate-500">{order.shippingAddress.email}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-amber-800 font-medium">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
-                                    <TableCell className="text-emerald-700 font-bold">{formatPrice(order.total)}</TableCell>
+                                    <TableCell className="text-amber-800 font-semibold">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                                    <TableCell className="text-emerald-700 font-extrabold">{formatPrice(order.total)}</TableCell>
                                     <TableCell>
                                         <Badge className={getStatusColor(order.status)}>
                                             {order.status}

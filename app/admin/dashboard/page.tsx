@@ -74,7 +74,7 @@ export default function AdminDashboard() {
 
             <div className="grid gap-4 md:grid-cols-3">
                 <motion.div variants={item}>
-                    <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
+                    <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-bold text-slate-700">Total Revenue</CardTitle>
                             <TrendingUp className="h-4 w-4 text-emerald-700" />
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
                     </Card>
                 </motion.div>
                 <motion.div variants={item}>
-                    <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
+                    <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-bold text-slate-700">Orders</CardTitle>
                             <ShoppingCart className="h-4 w-4 text-orange-700" />
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
                     </Card>
                 </motion.div>
                 <motion.div variants={item}>
-                    <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
+                    <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-bold text-slate-700">Products</CardTitle>
                             <Package className="h-4 w-4 text-blue-900" />
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <motion.div variants={item} className="col-span-4">
-                    <Card className="border-blue-100 h-full bg-white">
+                    <Card className="border-slate-200 h-full bg-white shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-slate-900 font-bold">Recent Orders</CardTitle>
                         </CardHeader>
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
                 </motion.div>
 
                 <motion.div variants={item} className="col-span-3">
-                    <Card className="border-blue-100 h-full bg-white">
+                    <Card className="border-slate-200 h-full bg-white shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-slate-900 font-bold">Overview</CardTitle>
                         </CardHeader>
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <motion.div variants={item}>
-                    <Card className="border-blue-100 h-full bg-white">
+                    <Card className="border-slate-200 h-full bg-white shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-slate-900 font-bold">Order Status</CardTitle>
                         </CardHeader>
@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                     </Card>
                 </motion.div>
                 <motion.div variants={item}>
-                    <Card className="border-blue-100 bg-white">
+                    <Card className="border-slate-200 bg-white shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-slate-900 font-bold">Category Distribution</CardTitle>
                         </CardHeader>
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
                     </Card>
                 </motion.div>
                 <motion.div variants={item}>
-                    <Card className="border-blue-100 bg-white">
+                    <Card className="border-slate-200 bg-white shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-slate-900 font-bold">Inventory Status</CardTitle>
                         </CardHeader>
