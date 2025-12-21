@@ -192,44 +192,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <motion.div variants={item}>
-                    <Card className="border-slate-200 h-full bg-white shadow-sm">
-                        <CardHeader>
-                            <CardTitle className="text-slate-900 font-bold">Order Status</CardTitle>
-                        </CardHeader>
-                        <CardContent className="h-[300px]">
-                            {orderStatusData.length === 0 ? (
-                                <div className="flex h-full items-center justify-center text-slate-400">
-                                    No orders yet
-                                </div>
-                            ) : (
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={orderStatusData}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={80}
-                                            paddingAngle={5}
-                                            dataKey="_count.id"
-                                            nameKey="status"
-                                        >
-                                            {orderStatusData.map((entry: any, index: number) => (
-                                                <Cell key={`cell-${index}`} fill={categoryColors[index % categoryColors.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip
-                                            contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#1e293b' }}
-                                            formatter={(value: number, name: string) => [value, name.charAt(0).toUpperCase() + name.slice(1)]}
-                                        />
-                                        <Legend formatter={(value) => <span className="text-slate-700 font-medium">{value.charAt(0).toUpperCase() + value.slice(1)}</span>} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            )}
-                        </CardContent>
-                    </Card>
-                </motion.div>
+
                 <motion.div variants={item}>
                     <Card className="border-slate-200 bg-white shadow-sm">
                         <CardHeader>
