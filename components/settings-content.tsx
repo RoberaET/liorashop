@@ -9,14 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { useStore } from "@/lib/store"
+import { useAuth } from "@/lib/auth-context"
 import { useMounted } from "@/hooks/use-mounted"
 import { useToast } from "@/hooks/use-toast"
 
 export function SettingsContent() {
     const router = useRouter()
-    const user = useStore((state) => state.user)
-    const setUser = useStore((state) => state.setUser)
+    const { user, isLoading } = useAuth()
     const mounted = useMounted()
     const { toast } = useToast()
 
@@ -32,7 +31,7 @@ export function SettingsContent() {
     })
 
     useEffect(() => {
-        if (mounted) {
+        if (!isLoading) {
             if (!user) {
                 router.push("/login")
             } else {
@@ -42,23 +41,23 @@ export function SettingsContent() {
                 })
             }
         }
-    }, [mounted, user, router])
+    }, [isLoading, user, router])
 
-    if (!mounted || !user) {
+    if (isLoading) {
+        return <div className="min-h-[50vh] flex items-center justify-center">Loading...</div>
+    }
+
+    if (!user) {
         return null
     }
 
     const handleUpdateProfile = (e: React.FormEvent) => {
         e.preventDefault()
         if (user) {
-            setUser({
-                ...user,
-                name: formData.name,
-                email: formData.email
-            })
+            // TODO: Implement update profile in AuthContext
             toast({
-                title: "Profile Updated",
-                description: "Your profile information has been saved successfully.",
+                title: "Profile Update",
+                description: "Profile updates are currently disabled in this demo.",
             })
         }
     }

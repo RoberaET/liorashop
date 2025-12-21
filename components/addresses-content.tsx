@@ -12,10 +12,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useStore } from "@/lib/store"
 import { useMounted } from "@/hooks/use-mounted"
 import type { Address } from "@/lib/types"
+import { useAuth } from "@/lib/auth-context"
 
 export function AddressesContent() {
     const router = useRouter()
-    const user = useStore((state) => state.user)
+    const { user, isLoading } = useAuth()
     const addresses = useStore((state) => state.addresses)
     const addAddress = useStore((state) => state.addAddress)
     const removeAddress = useStore((state) => state.removeAddress)
@@ -33,12 +34,16 @@ export function AddressesContent() {
     })
 
     useEffect(() => {
-        if (mounted && !user) {
+        if (!isLoading && !user) {
             router.push("/login")
         }
-    }, [mounted, user, router])
+    }, [user, isLoading, router])
 
-    if (!mounted || !user) {
+    if (isLoading) {
+        return <div className="min-h-[50vh] flex items-center justify-center">Loading...</div>
+    }
+
+    if (!user) {
         return null
     }
 

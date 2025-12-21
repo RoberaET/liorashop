@@ -1,21 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { LayoutDashboard, Package, ShoppingCart, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { useStore } from "@/lib/store"
-import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth-context"
 
 export function AdminSidebar() {
     const pathname = usePathname()
     const router = useRouter()
-    const setUser = useStore((state) => state.setUser)
+    const { logout } = useAuth()
 
     const handleLogout = () => {
-        setUser(null)
-        router.push("/login")
+        logout()
     }
 
     const routes = [

@@ -7,27 +7,29 @@ import { User, Package, Heart, MapPin, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useStore } from "@/lib/store"
+import { useAuth } from "@/lib/auth-context"
 
 export function AccountContent() {
   const router = useRouter()
-  const user = useStore((state) => state.user)
-  const setUser = useStore((state) => state.setUser)
+  const { user, logout, isLoading } = useAuth()
   const wishlist = useStore((state) => state.wishlist)
 
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       router.push("/login")
     }
-  }, [user, router])
+  }, [user, isLoading, router])
+
+  if (isLoading) {
+    return <div className="min-h-[50vh] flex items-center justify-center">Loading...</div>
+  }
 
   if (!user) {
     return null
   }
 
   const handleLogout = () => {
-    setUser(null)
-    router.push("/")
+    logout()
   }
 
   const menuItems = [

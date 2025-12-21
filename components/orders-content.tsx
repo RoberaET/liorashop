@@ -11,21 +11,26 @@ import { Badge } from "@/components/ui/badge"
 import { formatPrice } from "@/lib/utils"
 import { useStore } from "@/lib/store"
 import { useMounted } from "@/hooks/use-mounted"
+import { useAuth } from "@/lib/auth-context"
 
 export function OrdersContent() {
     const router = useRouter()
-    const user = useStore((state) => state.user)
+    const { user, isLoading } = useAuth()
     const orders = useStore((state) => state.orders)
     const mounted = useMounted()
     const [expandedOrders, setExpandedOrders] = useState<string[]>([])
 
     useEffect(() => {
-        if (mounted && !user) {
+        if (!isLoading && !user) {
             router.push("/login")
         }
-    }, [mounted, user, router])
+    }, [user, isLoading, router])
 
-    if (!mounted || !user) {
+    if (isLoading) {
+        return <div className="min-h-[50vh] flex items-center justify-center">Loading...</div>
+    }
+
+    if (!user) {
         return null
     }
 
@@ -95,7 +100,7 @@ export function OrdersContent() {
                                                     <span>Placed on {date}</span>
                                                 </div>
                                             </div>
-                                            <div className="flex items-centergap-4">
+                                            <div className="flex items-center gap-4">
                                                 <div className="text-right mr-4">
                                                     <p className="text-sm text-muted-foreground">Total Amount</p>
                                                     <p className="font-semibold">{formatPrice(order.total)}</p>
