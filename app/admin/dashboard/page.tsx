@@ -80,7 +80,7 @@ export default function AdminDashboard() {
                             <TrendingUp className="h-4 w-4 text-emerald-700" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-extrabold text-emerald-800">{formatPrice(totalRevenue)}</div>
+                            <div className="text-2xl font-extrabold text-green-600">{formatPrice(totalRevenue)}</div>
                         </CardContent>
                     </Card>
                 </motion.div>
