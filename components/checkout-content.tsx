@@ -13,6 +13,13 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useStore } from "@/lib/store"
 import { formatPrice } from "@/lib/utils"
 import type { Order } from "@/lib/types"
@@ -24,6 +31,7 @@ const COUPONS: { [key: string]: number } = {
 export function CheckoutContent() {
   const router = useRouter()
   const cart = useStore((state) => state.cart)
+  const addresses = useStore((state) => state.addresses)
   const clearCart = useStore((state) => state.clearCart)
   const getCartTotal = useStore((state) => state.getCartTotal)
   const setShippingAddress = useStore((state) => state.setShippingAddress)
@@ -106,6 +114,7 @@ export function CheckoutContent() {
     e.preventDefault()
     setShippingAddress({
       fullName: shippingForm.fullName,
+      email: shippingForm.email,
       street: shippingForm.street,
       city: shippingForm.city,
       state: shippingForm.state,
@@ -134,6 +143,7 @@ export function CheckoutContent() {
       createdAt: new Date(),
       shippingAddress: {
         fullName: shippingForm.fullName,
+        email: shippingForm.email,
         street: shippingForm.street,
         city: shippingForm.city,
         state: shippingForm.state,
@@ -198,6 +208,44 @@ export function CheckoutContent() {
                   <CardTitle>Shipping Information</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  {addresses.length > 0 && (
+                    <div className="mb-6 space-y-2">
+                      <Label>Saved Addresses</Label>
+                      <Select
+                        onValueChange={(value) => {
+                          const address = addresses[parseInt(value)]
+                          if (address) {
+                            setShippingForm({
+                              fullName: address.fullName,
+                              email: address.email || shippingForm.email, // Use address email if available, otherwise preserve current
+                              phone: address.phone,
+                              street: address.street,
+                              city: address.city,
+                              state: address.state,
+                              zipCode: address.zipCode,
+                              country: address.country,
+                            })
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a saved address" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {addresses.map((addr, idx) => (
+                            <SelectItem key={idx} value={idx.toString()}>
+                              {addr.fullName} - {addr.street}, {addr.city}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex items-center gap-2">
+                        <Separator className="flex-1" />
+                        <span className="text-xs text-muted-foreground">OR</span>
+                        <Separator className="flex-1" />
+                      </div>
+                    </div>
+                  )}
                   <form onSubmit={handleShippingSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -207,6 +255,17 @@ export function CheckoutContent() {
                           placeholder="Abebe Kebede"
                           value={shippingForm.fullName}
                           onChange={(e) => setShippingForm({ ...shippingForm, fullName: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="abebe@gmail.com"
+                          value={shippingForm.email}
+                          onChange={(e) => setShippingForm({ ...shippingForm, email: e.target.value })}
                           required
                         />
                       </div>

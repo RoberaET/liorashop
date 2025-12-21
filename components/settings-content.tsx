@@ -11,12 +11,14 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useStore } from "@/lib/store"
 import { useMounted } from "@/hooks/use-mounted"
+import { useToast } from "@/hooks/use-toast"
 
 export function SettingsContent() {
     const router = useRouter()
     const user = useStore((state) => state.user)
     const setUser = useStore((state) => state.setUser)
     const mounted = useMounted()
+    const { toast } = useToast()
 
     const [formData, setFormData] = useState({
         name: "",
@@ -54,7 +56,10 @@ export function SettingsContent() {
                 name: formData.name,
                 email: formData.email
             })
-            // Show success msg or toast here (skipping for now)
+            toast({
+                title: "Profile Updated",
+                description: "Your profile information has been saved successfully.",
+            })
         }
     }
 

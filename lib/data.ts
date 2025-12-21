@@ -15,6 +15,7 @@ export const products: Product[] = [
     reviews: 128,
     inStock: true,
     tags: ["bestseller", "sustainable"],
+    stock: 20,
   },
   {
     id: "2",
@@ -28,6 +29,7 @@ export const products: Product[] = [
     reviews: 256,
     inStock: true,
     tags: ["popular"],
+    stock: 20,
   },
   {
     id: "3",
@@ -41,6 +43,7 @@ export const products: Product[] = [
     reviews: 89,
     inStock: true,
     tags: ["premium"],
+    stock: 20,
   },
   {
     id: "4",
@@ -52,6 +55,7 @@ export const products: Product[] = [
     rating: 4.6,
     reviews: 167,
     inStock: true,
+    stock: 20,
   },
   // Shoes
   {
@@ -65,6 +69,7 @@ export const products: Product[] = [
     reviews: 312,
     inStock: true,
     tags: ["bestseller"],
+    stock: 20,
   },
   {
     id: "6",
@@ -79,6 +84,7 @@ export const products: Product[] = [
     reviews: 98,
     inStock: true,
     tags: ["premium"],
+    stock: 20,
   },
   {
     id: "7",
@@ -91,6 +97,7 @@ export const products: Product[] = [
     reviews: 445,
     inStock: true,
     tags: ["popular"],
+    stock: 20,
   },
   {
     id: "8",
@@ -102,6 +109,7 @@ export const products: Product[] = [
     rating: 4.6,
     reviews: 134,
     inStock: true,
+    stock: 20,
   },
   // Cosmetics
   {
@@ -115,6 +123,7 @@ export const products: Product[] = [
     reviews: 523,
     inStock: true,
     tags: ["bestseller"],
+    stock: 20,
   },
   {
     id: "10",
@@ -128,6 +137,7 @@ export const products: Product[] = [
     reviews: 289,
     inStock: true,
     tags: ["popular"],
+    stock: 20,
   },
   {
     id: "11",
@@ -141,6 +151,7 @@ export const products: Product[] = [
     reviews: 178,
     inStock: true,
     tags: ["skincare"],
+    stock: 20,
   },
   {
     id: "12",
@@ -153,6 +164,7 @@ export const products: Product[] = [
     reviews: 612,
     inStock: true,
     tags: ["bestseller"],
+    stock: 20,
   },
   // Perfumes
   {
@@ -168,6 +180,7 @@ export const products: Product[] = [
     reviews: 124,
     inStock: true,
     tags: ["bestseller", "luxury"],
+    stock: 20,
   },
   {
     id: "14",
@@ -182,6 +195,7 @@ export const products: Product[] = [
     reviews: 89,
     inStock: true,
     tags: ["new"],
+    stock: 20,
   },
   {
     id: "15",
@@ -196,6 +210,7 @@ export const products: Product[] = [
     reviews: 215,
     inStock: true,
     tags: ["premium", "luxury"],
+    stock: 20,
   },
   {
     id: "16",
@@ -210,6 +225,7 @@ export const products: Product[] = [
     reviews: 56,
     inStock: true,
     tags: ["sale"],
+    stock: 20,
   },
   {
     id: "17",
@@ -224,6 +240,7 @@ export const products: Product[] = [
     reviews: 420,
     inStock: true,
     tags: ["bestseller", "popular"],
+    stock: 20,
   },
   {
     id: "18",
@@ -238,6 +255,7 @@ export const products: Product[] = [
     reviews: 42,
     inStock: true,
     tags: ["new", "luxury"],
+    stock: 20,
   },
 ]
 

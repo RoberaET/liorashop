@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { LanguageProvider } from "@/lib/language-context"
 import { FlyAnimationProvider } from "@/components/fly-animation-provider"
+import { Toaster } from "@/components/ui/toaster"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -36,6 +37,7 @@ export default function RootLayout({
           <FlyAnimationProvider>
             {children}
             <Analytics />
+            <Toaster />
           </FlyAnimationProvider>
         </LanguageProvider>
       </body>

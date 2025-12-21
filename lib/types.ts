@@ -10,6 +10,7 @@ export interface Product {
   rating: number
   reviews: number
   inStock: boolean
+  stock: number
   tags?: string[]
   images?: string[]
 }
@@ -29,6 +30,7 @@ export interface User {
   name: string
   email: string
   avatar?: string
+  role: "admin" | "user"
 }
 
 export interface Order {
@@ -42,6 +44,7 @@ export interface Order {
 
 export interface Address {
   fullName: string
+  email: string
   street: string
   city: string
   state: string

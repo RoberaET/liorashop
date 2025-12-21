@@ -31,6 +31,8 @@ interface StoreState {
   // Orders
   orders: Order[]
   addOrder: (order: Order) => void
+  updateOrderStatus: (orderId: string, status: Order["status"]) => void
+  removeOrder: (orderId: string) => void
 
   // Addresses
   addresses: Address[]
@@ -106,6 +108,14 @@ export const useStore = create<StoreState>()(
       // Orders
       orders: [],
       addOrder: (order) => set((state) => ({ orders: [order, ...state.orders] })),
+      updateOrderStatus: (orderId, status) =>
+        set((state) => ({
+          orders: state.orders.map((order) => (order.id === orderId ? { ...order, status } : order)),
+        })),
+      removeOrder: (orderId) =>
+        set((state) => ({
+          orders: state.orders.filter((order) => order.id !== orderId),
+        })),
 
       // Addresses
       addresses: [],

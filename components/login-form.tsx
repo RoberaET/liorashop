@@ -31,11 +31,22 @@ export function LoginForm() {
     // Mock authentication - replace with real auth later
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    if (email && password) {
+    // Check for admin credentials
+    if (email === "admin" && password === "t#0Us@nd3840") {
+      setUser({
+        id: "admin-1",
+        name: "Admin User",
+        email: "admin@liorashop.com",
+        role: "admin",
+      })
+      router.push("/admin/dashboard")
+    } else if (email && password) {
+      // Normal user mockup
       setUser({
         id: "1",
         name: email.split("@")[0],
         email: email,
+        role: "user",
       })
       router.push("/account")
     } else {
@@ -54,10 +65,10 @@ export function LoginForm() {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Email or Username</Label>
         <Input
           id="email"
-          type="email"
+          type="text"
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
