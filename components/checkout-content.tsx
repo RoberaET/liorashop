@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -54,6 +54,26 @@ export function CheckoutContent() {
     zipCode: "",
     country: "Ethiopia",
   })
+
+  // Auto-fill form with default address
+  useEffect(() => {
+    if (addresses.length > 0) {
+      const defaultAddress = addresses[0]
+      setShippingForm({
+        fullName: defaultAddress.fullName,
+        email: defaultAddress.email || user?.email || "",
+        phone: defaultAddress.phone,
+        street: defaultAddress.street,
+        city: defaultAddress.city,
+        state: defaultAddress.state,
+        zipCode: defaultAddress.zipCode,
+        country: defaultAddress.country,
+      })
+    } else if (user?.email) {
+      // Pre-fill email even if no address
+      setShippingForm(prev => ({ ...prev, email: user.email }))
+    }
+  }, [addresses, user])
 
   const [paymentForm, setPaymentForm] = useState({
     cardNumber: "",

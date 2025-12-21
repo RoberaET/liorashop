@@ -82,6 +82,9 @@ export const translations = {
             continueShopping: "Continue Shopping",
             items: "items",
             remove: "Remove",
+            shipping: "Shipping",
+            total: "Total",
+            freeShipping: "You are eligible for free shipping!",
         },
         faq: {
             title: "Frequently Asked Questions",
