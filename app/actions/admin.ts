@@ -99,3 +99,85 @@ export async function deleteOrderAction(orderId: string) {
         return { error: "Failed to delete order" }
     }
 }
+
+export async function getAdminDashboardStatsAction() {
+    try {
+        const totalRevenue = await prisma.order.aggregate({
+            _sum: {
+                total: true
+            }
+        })
+
+        const totalOrders = await prisma.order.count()
+        const totalProducts = await prisma.product.count()
+        const lowStockProducts = await prisma.product.count({
+            where: {
+                stock: {
+                    lt: 10
+                }
+            }
+        })
+
+        const recentOrders = await prisma.order.findMany({
+            take: 5,
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                }
+            }
+        })
+
+        // Get sales for last 7 days
+        const sevenDaysAgo = new Date()
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+        const recentSales = await prisma.order.groupBy({
+            by: ['createdAt'],
+            _sum: {
+                total: true
+            },
+            where: {
+                createdAt: {
+                    gte: sevenDaysAgo
+                }
+            }
+        })
+
+        // Get category distribution
+        const productsByCategory = await prisma.product.groupBy({
+            by: ['category'],
+            _count: {
+                id: true
+            }
+        })
+
+        return {
+            stats: {
+                totalRevenue: totalRevenue._sum.total || 0,
+                totalOrders,
+                totalProducts,
+                lowStockCount: lowStockProducts,
+                recentOrders: recentOrders.map((order: any) => ({
+                    id: order.id,
+                    customerName: order.user?.name || 'Unknown',
+                    customerEmail: order.user?.email || 'Unknown', // Fallback
+                    shippingAddress: JSON.parse(order.shippingAddress), // Assuming stored as JSON string
+                    total: order.total,
+                    status: order.status,
+                    createdAt: order.createdAt
+                })),
+                salesData: recentSales,
+                categoryData: productsByCategory
+            }
+        }
+    } catch (error) {
+        console.error("Get admin stats error:", error)
+        return { error: "Failed to fetch admin stats" }
+    }
+}
