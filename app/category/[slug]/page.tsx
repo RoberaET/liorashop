@@ -38,14 +38,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <Navbar />
       <main className="flex-1">
         {/* Header */}
-        <section className={`relative pt-2 pb-2 md:pt-4 md:pb-4 ${slug === "perfumes" ? "bg-secondary" : "bg-muted/30"}`}>
-          <div className="container mx-auto px-4 text-center">
-            <nav className="text-xs text-muted-foreground mb-1 flex justify-center items-center">
+        <section className={`relative pt-3 pb-3 md:pt-5 md:pb-5 ${slug === "perfumes" ? "bg-secondary" : "bg-muted/30"}`}>
+          <div className="container mx-auto px-4 text-left">
+            <nav className="text-xs text-muted-foreground mb-1">
               <span>Home</span>
               <span className="mx-2">/</span>
               <span className="text-foreground">{category.name}</span>
             </nav>
-            <h1 className="text-xl md:text-2xl font-serif font-bold mb-0.5">{category.name}</h1>
+            <h1 className="text-2xl md:text-4xl font-serif font-bold mb-0.5">{category.name}</h1>
             <p className="text-muted-foreground text-xs">{products.length} products</p>
           </div>
         </section>
