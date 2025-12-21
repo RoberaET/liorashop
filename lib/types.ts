@@ -15,6 +15,13 @@ export interface Product {
   images?: string[]
 }
 
+export interface Category {
+  id: string
+  name: string
+  description?: string
+  image?: string
+}
+
 export interface CartItem {
   product: Product
   quantity: number
