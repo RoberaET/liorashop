@@ -1,23 +1,34 @@
 "use client"
 
-import { useState } from "react"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
-export function ProductFilters() {
-  const [priceRange, setPriceRange] = useState([0, 200])
+interface ProductFiltersProps {
+  min: number
+  max: number
+  priceRange: number[]
+  onPriceChange: (value: number[]) => void
+}
 
+export function ProductFilters({ min, max, priceRange, onPriceChange }: ProductFiltersProps) {
   return (
     <div className="space-y-6">
-      <Accordion type="multiple" className="w-full">
+      <Accordion type="multiple" className="w-full" defaultValue={["price"]}>
         {/* Price Filter */}
         <AccordionItem value="price">
           <AccordionTrigger className="text-sm font-semibold">Price Range</AccordionTrigger>
           <AccordionContent>
             <div className="pt-2 space-y-4">
-              <Slider value={priceRange} onValueChange={setPriceRange} max={500} step={10} className="w-full" />
+              <Slider
+                value={priceRange}
+                onValueChange={onPriceChange}
+                min={min}
+                max={max}
+                step={10}
+                className="w-full"
+              />
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span>ETB {priceRange[0]}</span>
                 <span>ETB {priceRange[1]}</span>
