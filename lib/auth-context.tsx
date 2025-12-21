@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 
-    const { cart, wishlist, setCart, setWishlist, clearCart } = useStore()
+    const { cart, wishlist, setCart, setWishlist, clearCart, setOrders } = useStore()
 
     // Sync Cart & Wishlist with DB when they change
     useEffect(() => {
@@ -46,8 +46,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 // Load data
                 const userCart = db.getCart(parsedUser.id)
                 const userWishlist = db.getWishlist(parsedUser.id)
+                const userOrders = db.getOrders(parsedUser.id)
                 setCart(userCart)
                 setWishlist(userWishlist)
+                setOrders(userOrders)
             }
             setIsLoading(false)
         }
@@ -66,8 +68,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // Load data
             const userCart = db.getCart(user.id)
             const userWishlist = db.getWishlist(user.id)
+            const userOrders = db.getOrders(user.id)
             setCart(userCart)
             setWishlist(userWishlist)
+            setOrders(userOrders)
 
             if (user.role === 'admin') router.push('/admin/dashboard')
             else router.push('/')
@@ -98,6 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem("liora_user")
         clearCart()
         setWishlist([])
+        setOrders([])
         router.push("/login")
     }
 

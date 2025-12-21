@@ -51,7 +51,7 @@ export const db = {
     findUserByEmail: async (email: string) => {
         const db = getDB()
         // Admin check
-        if (email === "admin@liorashop.com") {
+        if (email === "admin" || email === "admin@liorashop.com") {
             return {
                 id: "admin-1",
                 name: "Admin User",
@@ -100,6 +100,17 @@ export const db = {
         }
         db.orders[userId].unshift(order)
         saveDB(db)
+    },
+
+    updateOrderStatus: (userId: string, orderId: string, status: Order["status"]) => {
+        const db = getDB()
+        if (db.orders[userId]) {
+            const orderIndex = db.orders[userId].findIndex(o => o.id === orderId)
+            if (orderIndex !== -1) {
+                db.orders[userId][orderIndex].status = status
+                saveDB(db)
+            }
+        }
     },
 
     // Cart Methods
