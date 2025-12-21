@@ -41,7 +41,7 @@ export interface Order {
   id: string
   items: CartItem[]
   total: number
-  status: "pending" | "confirmed" | "shipped" | "delivered"
+  status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
   createdAt: Date
   shippingAddress: Address
 }

@@ -122,85 +122,84 @@ export function OrdersContent() {
                                                     <p className="text-sm text-muted-foreground">Total Amount</p>
                                                     <p className="font-semibold">{formatPrice(order.total)}</p>
                                                 </div>
-                                            </div>
-                                            {(order.status === "pending" || order.status === "confirmed") && (
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    className="mr-2"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        handleCancelOrder(order.id)
-                                                    }}
-                                                >
-                                                    Cancel Order
+                                                {(order.status === "pending" || order.status === "confirmed") && (
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="mr-2"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            handleCancelOrder(order.id)
+                                                        }}
+                                                    >
+                                                        Cancel Order
+                                                    </Button>
+                                                )}
+                                                <Button variant="ghost" size="sm" onClick={() => toggleOrder(order.id)}>
+                                                    {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                                    <span className="sr-only">Toggle details</span>
                                                 </Button>
-                                            )}
-                                            <Button variant="ghost" size="sm" onClick={() => toggleOrder(order.id)}>
-                                                {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                                                <span className="sr-only">Toggle details</span>
-                                            </Button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
                                     {
-                                isExpanded && (
-                                    <div className="p-6 space-y-6 animate-in slide-in-from-top-2 duration-200">
-                                        {/* Items */}
-                                        <div className="space-y-4">
-                                            <h3 className="font-semibold flex items-center gap-2">
-                                                <Package className="h-4 w-4" /> Items
-                                            </h3>
-                                            <div className="space-y-4">
-                                                {order.items.map((item) => (
-                                                    <div key={item.product.id} className="flex gap-4">
-                                                        <div className="relative w-16 h-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
-                                                            <Image
-                                                                src={item.product.image || "/placeholder.svg"}
-                                                                alt={item.product.name}
-                                                                fill
-                                                                className="object-cover"
-                                                            />
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <Link href={`/product/${item.product.id}`} className="font-medium hover:underline">
-                                                                {item.product.name}
-                                                            </Link>
-                                                            <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
-                                                        </div>
-                                                        <p className="font-medium">{formatPrice(item.product.price * item.quantity)}</p>
+                                        isExpanded && (
+                                            <div className="p-6 space-y-6 animate-in slide-in-from-top-2 duration-200">
+                                                {/* Items */}
+                                                <div className="space-y-4">
+                                                    <h3 className="font-semibold flex items-center gap-2">
+                                                        <Package className="h-4 w-4" /> Items
+                                                    </h3>
+                                                    <div className="space-y-4">
+                                                        {order.items.map((item) => (
+                                                            <div key={item.product.id} className="flex gap-4">
+                                                                <div className="relative w-16 h-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
+                                                                    <Image
+                                                                        src={item.product.image || "/placeholder.svg"}
+                                                                        alt={item.product.name}
+                                                                        fill
+                                                                        className="object-cover"
+                                                                    />
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <Link href={`/product/${item.product.id}`} className="font-medium hover:underline">
+                                                                        {item.product.name}
+                                                                    </Link>
+                                                                    <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                                                                </div>
+                                                                <p className="font-medium">{formatPrice(item.product.price * item.quantity)}</p>
+                                                            </div>
+                                                        ))}
                                                     </div>
-                                                ))}
+                                                </div>
+
+                                                <div className="border-t pt-6"></div>
+
+                                                {/* Shipping Address */}
+                                                <div>
+                                                    <h3 className="font-semibold flex items-center gap-2 mb-2">
+                                                        <MapPin className="h-4 w-4" /> Shipping Address
+                                                    </h3>
+                                                    <address className="not-italic text-sm text-muted-foreground">
+                                                        <p>{order.shippingAddress.fullName}</p>
+                                                        <p>{order.shippingAddress.street}</p>
+                                                        <p>
+                                                            {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
+                                                        </p>
+                                                        <p>{order.shippingAddress.country}</p>
+                                                        <p>{order.shippingAddress.phone}</p>
+                                                    </address>
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        <div className="border-t pt-6"></div>
-
-                                        {/* Shipping Address */}
-                                        <div>
-                                            <h3 className="font-semibold flex items-center gap-2 mb-2">
-                                                <MapPin className="h-4 w-4" /> Shipping Address
-                                            </h3>
-                                            <address className="not-italic text-sm text-muted-foreground">
-                                                <p>{order.shippingAddress.fullName}</p>
-                                                <p>{order.shippingAddress.street}</p>
-                                                <p>
-                                                    {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
-                                                </p>
-                                                <p>{order.shippingAddress.country}</p>
-                                                <p>{order.shippingAddress.phone}</p>
-                                            </address>
-                                        </div>
-                                    </div>
-                                )
-                            }
+                                        )
+                                    }
                                 </Card>
-                )
-                })}
-            </div>
+                            )
+                        })}
+                    </div>
                 )}
-        </div>
+            </div>
         </div >
     )
 }
