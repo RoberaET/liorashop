@@ -99,3 +99,22 @@ export async function registerAction(data: Pick<RegisteredUser, "name" | "email"
         return { error: "Something went wrong" }
     }
 }
+
+export async function changePasswordAction(userId: string, newPassword: string) {
+    try {
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                password: hashedPassword,
+                mustChangePassword: false
+            } as any
+        })
+
+        return { success: true }
+    } catch (error) {
+        console.error("Change password error:", error)
+        return { error: "Failed to change password" }
+    }
+}

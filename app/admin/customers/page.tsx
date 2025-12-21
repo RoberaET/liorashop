@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 // import { db } from "@/lib/db"
-import { getAllUsersAction, deleteUserAction } from "@/app/actions/admin"
+import { getAllUsersAction, deleteUserAction, adminResetUserPasswordAction } from "@/app/actions/admin"
 import { RegisteredUser } from "@/lib/types"
 import {
     Table,
@@ -54,6 +54,19 @@ export default function AdminCustomersPage() {
         }
     }
 
+    const [resetResult, setResetResult] = useState<{ password: string, userId: string } | null>(null)
+
+    const handleResetPassword = async (userId: string) => {
+        if (confirm("Are you sure you want to reset this user's password?")) {
+            const result = await adminResetUserPasswordAction(userId)
+            if (result.success && result.tempPassword) {
+                setResetResult({ password: result.tempPassword, userId })
+            } else {
+                alert("Failed to reset password")
+            }
+        }
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -62,6 +75,27 @@ export default function AdminCustomersPage() {
                     <p className="text-muted-foreground">Manage your customer base</p>
                 </div>
             </div>
+
+            {/* Reset Password Success Dialog using standard Alert Dialog or simple conditional rendering */}
+            {resetResult && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full space-y-4">
+                        <h3 className="text-lg font-bold text-slate-900">Password Reset Successful</h3>
+                        <p className="text-slate-600 text-sm">
+                            The temporary password for the user is:
+                        </p>
+                        <div className="p-3 bg-slate-100 rounded text-center font-mono text-lg font-bold select-all border border-slate-200">
+                            {resetResult.password}
+                        </div>
+                        <p className="text-xs text-slate-500">
+                            Copy this password and send it to the user. They will be asked to change it upon login.
+                        </p>
+                        <Button className="w-full" onClick={() => setResetResult(null)}>
+                            Close
+                        </Button>
+                    </div>
+                </div>
+            )}
 
             <Card>
                 <CardHeader>
@@ -124,15 +158,27 @@ export default function AdminCustomersPage() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            {user.role !== 'admin' && (
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() => handleDeleteUser(user.id)}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            )}
+                                            <div className="flex items-center gap-2">
+                                                {user.role !== 'admin' && (
+                                                    <>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                            onClick={() => handleResetPassword(user.id)}
+                                                        >
+                                                            Reset Password
+                                                        </Button>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                            onClick={() => handleDeleteUser(user.id)}
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </>
+                                                )}
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}

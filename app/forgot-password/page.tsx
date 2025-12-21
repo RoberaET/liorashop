@@ -1,85 +1,59 @@
 "use client"
 
-import { useState } from "react"
+import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Loader2 } from "lucide-react"
-import Link from "next/link"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowLeft, Send } from "lucide-react"
 
 export default function ForgotPasswordPage() {
-    const [email, setEmail] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
-    const [isSubmitted, setIsSubmitted] = useState(false)
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500))
-
-        setIsSubmitted(true)
-        setIsLoading(false)
-    }
-
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
             <main className="flex-1 flex items-center justify-center py-12 px-4">
-                <div className="w-full max-w-md space-y-8">
-                    <div className="text-center">
-                        <h1 className="text-3xl font-serif font-bold">Reset Password</h1>
-                        <p className="text-muted-foreground mt-2">
-                            Enter your email to receive password reset instructions
-                        </p>
-                    </div>
-
-                    {isSubmitted ? (
-                        <div className="space-y-6 text-center">
-                            <div className="p-4 bg-green-50 text-green-700 rounded-md border border-green-200">
-                                If an account exists for <strong>{email}</strong>, we have sent a password reset link to it.
-                            </div>
-                            <Button asChild variant="outline" className="w-full">
-                                <Link href="/login">Return to Sign In</Link>
-                            </Button>
+                <Card className="w-full max-w-md shadow-lg border-slate-200">
+                    <CardHeader className="space-y-1">
+                        <CardTitle className="text-2xl font-bold text-center text-slate-900">Forgot password?</CardTitle>
+                        <CardDescription className="text-center text-slate-500">
+                            Contact our support team to recover your account
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-6">
+                        <div className="text-center text-sm text-slate-600">
+                            <p>If you have forgotten your password or username, please contact our customer service team on Telegram.</p>
+                            <p className="mt-2 text-muted-foreground">They will assist you in verifying your identity and resetting your password.</p>
                         </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email Address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="you@example.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    disabled={isLoading}
-                                />
-                            </div>
 
-                            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Sending Link...
-                                    </>
-                                ) : (
-                                    "Send Reset Link"
-                                )}
-                            </Button>
+                        <Button asChild className="w-full bg-[#0088cc] hover:bg-[#0077b5] gap-2 h-12 text-lg">
+                            <Link href="https://t.me/Rebika_abebe" target="_blank" rel="noopener noreferrer">
+                                <Send className="h-5 w-5" />
+                                Contact Support on Telegram
+                            </Link>
+                        </Button>
 
-                            <div className="text-center">
-                                <Link href="/login" className="text-sm font-medium hover:underline">
-                                    Back to Sign In
-                                </Link>
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t" />
                             </div>
-                        </form>
-                    )}
-                </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-white px-2 text-muted-foreground">
+                                    Or
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="text-center">
+                            <Link
+                                href="/login"
+                                className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                            >
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Back to Login
+                            </Link>
+                        </div>
+                    </CardContent>
+                </Card>
             </main>
             <Footer />
         </div>

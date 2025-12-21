@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 
-export function AdminSidebar() {
+export function AdminSidebar({ className }: { className?: string }) {
     const pathname = usePathname()
     const router = useRouter()
     const { logout } = useAuth()
@@ -40,7 +40,7 @@ export function AdminSidebar() {
     ]
 
     return (
-        <div className="flex flex-col h-screen border-r bg-slate-900 text-slate-50 w-64 shadow-xl">
+        <div className={cn("flex flex-col h-screen border-r bg-slate-900 text-slate-50 w-64 shadow-xl", className)}>
             <div className="p-6">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent uppercase tracking-wider">
                     Liora Admin

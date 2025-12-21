@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { Order, RegisteredUser } from "@/lib/types"
+import bcrypt from "bcryptjs"
 
 const mapPrismaOrderToFrontend = (prismaOrder: any): Order & { userId: string } => {
     return {
@@ -188,5 +189,26 @@ export async function getAdminDashboardStatsAction() {
     } catch (error) {
         console.error("Get admin stats error:", error)
         return { error: "Failed to fetch admin stats" }
+    }
+}
+
+export async function adminResetUserPasswordAction(userId: string) {
+    try {
+        // Generate a random 8-character password
+        const tempPassword = Math.random().toString(36).slice(-8)
+        const hashedPassword = await bcrypt.hash(tempPassword, 10)
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                password: hashedPassword,
+                mustChangePassword: true
+            } as any
+        })
+
+        return { success: true, tempPassword }
+    } catch (error) {
+        console.error("Reset password error:", error)
+        return { error: "Failed to reset password" }
     }
 }

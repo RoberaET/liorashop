@@ -25,6 +25,7 @@ model User {
   currency      String    @default("ETB")
   notifications Boolean   @default(true)
   marketingEmails Boolean @default(false)
+  mustChangePassword Boolean @default(false)
 
   // Relations
   addresses     Address[]

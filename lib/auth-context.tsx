@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { RegisteredUser, User, Address, UserSettings } from "./types"
 import { db } from "./db"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useStore } from "./store"
 import { loginAction, registerAction } from "@/app/actions/auth"
 import { addAddressAction, removeAddressAction, editAddressAction, updateSettingsAction } from "@/app/actions/user"
@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<RegisteredUser | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
+    const pathname = usePathname()
 
     const { cart, wishlist, setCart, setWishlist, clearCart, setOrders, addresses, setAddresses } = useStore()
 
@@ -48,6 +49,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             db.saveAddresses(user.id, addresses)
         }
     }, [addresses, user])
+
+    // Force password change if required
+    useEffect(() => {
+        if (user?.mustChangePassword && pathname !== '/change-password') {
+            router.push('/change-password')
+        }
+    }, [user, pathname, router])
 
     useEffect(() => {
         const initAuth = async () => {
@@ -86,8 +94,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setAddresses(user.addresses || [])
             // Cart/Wishlist from Prisma (if we loaded them)
             // For now, we trust Prisma return
-            if (user.role === 'admin') router.push('/admin/dashboard')
-            else router.push('/')
+
+            if (user.mustChangePassword) {
+                router.push('/change-password')
+            } else if (user.role === 'admin') {
+                router.push('/admin/dashboard')
+            } else {
+                router.push('/')
+            }
 
         } catch (error) {
             throw error

@@ -47,6 +47,7 @@ export interface User {
   role: "admin" | "user"
   addresses: Address[]
   settings: UserSettings
+  mustChangePassword?: boolean
 }
 
 export interface RegisteredUser extends User {
