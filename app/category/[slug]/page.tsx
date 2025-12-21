@@ -38,20 +38,20 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <Navbar />
       <main className="flex-1">
         {/* Header */}
-        <section className={`relative pt-6 pb-20 md:pt-8 md:pb-24 ${slug === "perfumes" ? "bg-secondary" : "bg-muted/30"}`}>
+        <section className={`relative pt-4 pb-12 md:pt-6 md:pb-16 ${slug === "perfumes" ? "bg-secondary" : "bg-muted/30"}`}>
           <div className="container mx-auto px-4">
             <nav className="text-sm text-muted-foreground mb-2">
               <span>Home</span>
               <span className="mx-2">/</span>
               <span className="text-foreground">{category.name}</span>
             </nav>
-            <h1 className="text-3xl md:text-4xl font-serif font-bold mb-2">{category.name}</h1>
-            <p className="text-muted-foreground text-base">{products.length} products</p>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold mb-1">{category.name}</h1>
+            <p className="text-muted-foreground text-sm">{products.length} products</p>
           </div>
         </section>
 
         {/* Products */}
-        <section className={`pb-12 md:pb-16 -mt-12 md:-mt-16 relative z-10 ${slug === "perfumes" ? "bg-transparent" : ""}`}>
+        <section className={`pb-12 md:pb-16 -mt-8 md:-mt-10 relative z-10 ${slug === "perfumes" ? "bg-transparent" : ""}`}>
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Sidebar Filters */}
