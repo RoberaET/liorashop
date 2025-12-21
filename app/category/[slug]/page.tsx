@@ -47,8 +47,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             </nav>
             <div className="text-center">
               <h1 className="text-2xl md:text-4xl font-serif font-bold mb-0.5">{category.name}</h1>
-              <p className="text-muted-foreground text-xs">{products.length} products</p>
             </div>
+            <p className="text-muted-foreground text-xs text-left">{products.length} products</p>
           </div>
         </section>
 
