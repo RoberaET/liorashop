@@ -25,8 +25,11 @@ export async function generateMetadata({ params }: ProductPageProps) {
   }
 
   return {
-    title: `${product.name} | LUXE`,
+    title: product.name,
     description: product.description,
+    openGraph: {
+      images: product.images && product.images.length > 0 ? product.images : [product.image],
+    },
   }
 }
 
@@ -44,8 +47,34 @@ export default async function ProductPage({ params }: ProductPageProps) {
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0
 
+  // JSON-LD for Product
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "image": product.images || [product.image],
+    "description": product.description,
+    "sku": product.sku || `LX-${product.id}`,
+    "brand": {
+      "@type": "Brand",
+      "name": "Liora Shop"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://liorashop.com/product/${product.id}`,
+      "priceCurrency": "ETB",
+      "price": product.price,
+      "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "itemCondition": "https://schema.org/NewCondition"
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <main className="flex-1">
         {/* Breadcrumb */}

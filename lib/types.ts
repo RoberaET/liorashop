@@ -32,16 +32,25 @@ export interface WishlistItem {
   addedAt: Date
 }
 
+export interface UserSettings {
+  notifications: boolean
+  currency: string
+  marketingEmails: boolean
+}
+
 export interface User {
   id: string
   name: string
   email: string
   avatar?: string
   role: "admin" | "user"
+  addresses: Address[]
+  settings: UserSettings
 }
 
 export interface RegisteredUser extends User {
   password?: string
+  createdAt: Date
 }
 
 export interface Order {

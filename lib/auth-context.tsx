@@ -1,13 +1,13 @@
 "use client"
 
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { RegisteredUser } from "./types"
+import { RegisteredUser, User, Address, UserSettings } from "./types"
 import { db } from "./db"
 import { useRouter } from "next/navigation"
 import { useStore } from "./store"
 
 interface AuthContextType {
-    user: RegisteredUser | null
+    user: User | null
     login: (email: string, password: string) => Promise<void>
     register: (data: Omit<RegisteredUser, "id" | "role">) => Promise<void>
     logout: () => void
@@ -93,7 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
-    const register = async (data: Omit<RegisteredUser, "id" | "role">) => {
+    const register = async (data: any) => {
         setIsLoading(true)
         try {
             const newUser = await db.createUser(data)
@@ -117,8 +117,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push("/login")
     }
 
+    const addAddress = async (address: Address) => {
+        if (!user) return
+        const updatedAddresses = [...user.addresses, address]
+        const updatedUser = await db.updateUser(user.id, { addresses: updatedAddresses })
+        if (updatedUser) setUser(updatedUser)
+    }
+
+    const removeAddress = async (index: number) => {
+        if (!user) return
+        const updatedAddresses = user.addresses.filter((_, i) => i !== index)
+        const updatedUser = await db.updateUser(user.id, { addresses: updatedAddresses })
+        if (updatedUser) setUser(updatedUser)
+    }
+
+    const updateSettings = async (settings: Partial<UserSettings>) => {
+        if (!user) return
+        const updatedSettings = { ...user.settings, ...settings }
+        const updatedUser = await db.updateUser(user.id, { settings: updatedSettings })
+        if (updatedUser) setUser(updatedUser)
+    }
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, isLoading, addAddress, removeAddress, updateSettings }}>
             {children}
         </AuthContext.Provider>
     )

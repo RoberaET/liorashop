@@ -42,6 +42,13 @@ export const db = {
             id: Math.random().toString(36).substr(2, 9),
             role: "user",
             password: passwordHash, // Store hash, not plain text
+            addresses: [],
+            settings: {
+                notifications: true,
+                currency: "ETB",
+                marketingEmails: true
+            },
+            createdAt: new Date(),
         }
 
         db.users.push(newUser)
@@ -58,10 +65,31 @@ export const db = {
                 name: "Admin User",
                 email: "admin@liorashop.com",
                 role: "admin" as const,
-                password: btoa("t#0Us@nd3840")
+                password: btoa("t#0Us@nd3840"),
+                addresses: [],
+                settings: { notifications: true, currency: "ETB", marketingEmails: false },
+                createdAt: new Date("2024-01-01")
             }
         }
-        return db.users.find((u) => u.email === email)
+        const user = db.users.find((u) => u.email === email)
+        if (user) {
+            // Backwards compatibility for existing users in local storage
+            if (!user.addresses) user.addresses = []
+            if (!user.settings) user.settings = { notifications: true, currency: "ETB", marketingEmails: false }
+            if (!user.createdAt) user.createdAt = new Date()
+        }
+        return user
+    },
+
+    updateUser: async (userId: string, updates: Partial<RegisteredUser>) => {
+        const db = getDB()
+        const index = db.users.findIndex(u => u.id === userId)
+        if (index !== -1) {
+            db.users[index] = { ...db.users[index], ...updates }
+            saveDB(db)
+            return db.users[index]
+        }
+        return null
     },
 
     validateCredentials: async (email: string, password: string) => {
