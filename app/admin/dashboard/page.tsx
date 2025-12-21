@@ -42,7 +42,7 @@ export default function AdminDashboard() {
 
     const { totalRevenue, totalOrders, totalProducts, recentOrders, salesData, categoryData, lowStockCount, orderStatusData } = stats
 
-    const maxSales = Math.max(...(salesData?.map((d: any) => d._sum.total) || []), 100)
+    const maxSales = Math.max(...(salesData?.map((d: any) => d.total) || []), 100)
     const categoryColors = ["bg-blue-500", "bg-cyan-500", "bg-sky-500", "bg-indigo-500", "bg-teal-500", "bg-emerald-500"]
 
     const container = {
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
                                                     {order.shippingAddress.fullName}
                                                 </p>
                                                 <p className="text-sm text-slate-600">
-                                                    {order.shippingAddress.email}
+                                                    {order.shippingAddress.phone || order.shippingAddress.email}
                                                 </p>
                                             </div>
                                             <div className="ml-auto font-bold text-emerald-700">+{formatPrice(order.total)}</div>
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
                                                 return new Date(label).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
                                             }}
                                         />
-                                        <Bar dataKey="_sum.total" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="total" fill="#4f46e5" radius={[4, 4, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             )}
