@@ -34,7 +34,6 @@ export function CheckoutContent() {
   const router = useRouter()
   const { t } = useLanguage()
   const cart = useStore((state) => state.cart)
-  const addresses = useStore((state) => state.addresses)
   const clearCart = useStore((state) => state.clearCart)
   const getCartTotal = useStore((state) => state.getCartTotal)
   const setShippingAddress = useStore((state) => state.setShippingAddress)
@@ -57,11 +56,11 @@ export function CheckoutContent() {
 
   // Auto-fill form with default address
   useEffect(() => {
-    if (addresses.length > 0) {
-      const defaultAddress = addresses[0]
+    if (user && user.addresses && user.addresses.length > 0) {
+      const defaultAddress = user.addresses[0]
       setShippingForm({
         fullName: defaultAddress.fullName,
-        email: defaultAddress.email || user?.email || "",
+        email: defaultAddress.email || user.email || "",
         phone: defaultAddress.phone,
         street: defaultAddress.street,
         city: defaultAddress.city,
@@ -73,7 +72,7 @@ export function CheckoutContent() {
       // Pre-fill email even if no address
       setShippingForm(prev => ({ ...prev, email: user.email }))
     }
-  }, [addresses, user])
+  }, [user])
 
   const [paymentForm, setPaymentForm] = useState({
     cardNumber: "",
@@ -240,16 +239,16 @@ export function CheckoutContent() {
                   <CardTitle>{t.checkout.shippingInfo}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {addresses.length > 0 && (
+                  {user?.addresses && user.addresses.length > 0 && (
                     <div className="mb-6 space-y-2">
                       <Label>{t.checkout.savedAddresses}</Label>
                       <Select
                         onValueChange={(value) => {
-                          const address = addresses[parseInt(value)]
+                          const address = user.addresses[parseInt(value)]
                           if (address) {
                             setShippingForm({
                               fullName: address.fullName,
-                              email: address.email || shippingForm.email, // Use address email if available, otherwise preserve current
+                              email: address.email || shippingForm.email,
                               phone: address.phone,
                               street: address.street,
                               city: address.city,
@@ -264,7 +263,7 @@ export function CheckoutContent() {
                           <SelectValue placeholder={t.checkout.selectAddress} />
                         </SelectTrigger>
                         <SelectContent>
-                          {addresses.map((addr, idx) => (
+                          {user.addresses.map((addr, idx) => (
                             <SelectItem key={idx} value={idx.toString()}>
                               {addr.fullName} - {addr.street}, {addr.city}
                             </SelectItem>
