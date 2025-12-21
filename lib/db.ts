@@ -22,6 +22,14 @@ const getDB = (): DBSchema => {
 
     // Check if we need to merge seed users (in case they are missing from local storage)
     const existingDB = JSON.parse(stored) as DBSchema
+
+    // Ensure structure exists
+    if (!existingDB.users) existingDB.users = []
+    if (!existingDB.orders) existingDB.orders = {}
+    if (!existingDB.carts) existingDB.carts = {}
+    if (!existingDB.wishlists) existingDB.wishlists = {}
+    if (!existingDB.addresses) existingDB.addresses = {}
+
     let modified = false
 
     INITIAL_DB.users.forEach(seedUser => {
