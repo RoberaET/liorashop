@@ -1,4 +1,3 @@
-"use client"
 
 import Link from "next/link"
 import { Navbar } from "@/components/navbar"
@@ -6,6 +5,12 @@ import { Footer } from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Mail, Phone, MapPin, Instagram, Video, Send, ExternalLink } from "lucide-react"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "Contact Us | LIORA SHOP",
+    description: "Get in touch with Liora Shop via Telegram, Phone, or Email.",
+}
 
 export default function ContactPage() {
     const contactMethods = [
