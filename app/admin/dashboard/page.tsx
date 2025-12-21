@@ -77,10 +77,10 @@ export default function AdminDashboard() {
                     <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-slate-600">Total Revenue</CardTitle>
-                            <TrendingUp className="h-4 w-4 text-blue-600" />
+                            <TrendingUp className="h-4 w-4 text-emerald-600" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{formatPrice(totalRevenue)}</div>
+                            <div className="text-2xl font-bold text-emerald-700">{formatPrice(totalRevenue)}</div>
                         </CardContent>
                     </Card>
                 </motion.div>
@@ -88,10 +88,10 @@ export default function AdminDashboard() {
                     <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-slate-600">Orders</CardTitle>
-                            <ShoppingCart className="h-4 w-4 text-purple-600" />
+                            <ShoppingCart className="h-4 w-4 text-orange-600" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{totalOrders}</div>
+                            <div className="text-2xl font-bold text-orange-700">{totalOrders}</div>
                         </CardContent>
                     </Card>
                 </motion.div>
@@ -99,10 +99,10 @@ export default function AdminDashboard() {
                     <Card className="border-blue-100 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-slate-600">Products</CardTitle>
-                            <Package className="h-4 w-4 text-emerald-600" />
+                            <Package className="h-4 w-4 text-blue-800" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-emerald-900">{totalProducts}</div>
+                            <div className="text-2xl font-bold text-blue-900">{totalProducts}</div>
                         </CardContent>
                     </Card>
                 </motion.div>

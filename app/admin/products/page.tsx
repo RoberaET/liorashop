@@ -21,7 +21,7 @@ export default async function AdminProductsPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight text-indigo-950">Products</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-blue-950">Products</h2>
                 <p className="text-slate-600">Manage your product catalog.</p>
             </div>
 
@@ -29,12 +29,12 @@ export default async function AdminProductsPage() {
                 <Table>
                     <TableHeader>
                         <TableRow className="border-slate-200 hover:bg-slate-50">
-                            <TableHead className="w-[80px] text-indigo-900 font-bold">Image</TableHead>
-                            <TableHead className="text-indigo-900 font-bold">Name</TableHead>
-                            <TableHead className="text-indigo-900 font-bold">Category</TableHead>
-                            <TableHead className="text-indigo-900 font-bold">Price</TableHead>
-                            <TableHead className="text-indigo-900 font-bold">Stock</TableHead>
-                            <TableHead className="text-indigo-900 font-bold">Status</TableHead>
+                            <TableHead className="w-[80px] text-slate-900 font-bold">Image</TableHead>
+                            <TableHead className="text-purple-900 font-bold">Name</TableHead>
+                            <TableHead className="text-amber-900 font-bold">Category</TableHead>
+                            <TableHead className="text-emerald-900 font-bold">Price</TableHead>
+                            <TableHead className="text-red-900 font-bold">Stock</TableHead>
+                            <TableHead className="text-slate-900 font-bold">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -50,11 +50,11 @@ export default async function AdminProductsPage() {
                                         />
                                     </div>
                                 </TableCell>
-                                <TableCell className="font-semibold text-blue-900">{product.name}</TableCell>
-                                <TableCell className="capitalize text-slate-700">{product.category}</TableCell>
+                                <TableCell className="font-semibold text-purple-700">{product.name}</TableCell>
+                                <TableCell className="capitalize text-amber-800 font-medium">{product.category}</TableCell>
                                 <TableCell className="text-emerald-700 font-bold">{formatPrice(product.price)}</TableCell>
                                 <TableCell>
-                                    <span className={product.stock === 0 ? "text-red-600 font-bold" : "text-amber-800 font-medium"}>
+                                    <span className={product.stock === 0 ? "text-red-600 font-bold" : "text-red-800 font-medium"}>
                                         {product.stock}
                                     </span>
                                 </TableCell>

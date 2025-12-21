@@ -100,7 +100,7 @@ export default function AdminOrdersPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight text-purple-950">Orders</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-orange-900">Orders</h2>
                 <p className="text-slate-600">Manage and update customer orders.</p>
             </div>
 
@@ -108,12 +108,12 @@ export default function AdminOrdersPage() {
                 <Table>
                     <TableHeader>
                         <TableRow className="border-slate-200 hover:bg-slate-50">
-                            <TableHead className="text-purple-900 font-bold">Order ID</TableHead>
+                            <TableHead className="text-orange-900 font-bold">Order ID</TableHead>
                             <TableHead className="text-purple-900 font-bold">Customer</TableHead>
-                            <TableHead className="text-purple-900 font-bold">Date</TableHead>
-                            <TableHead className="text-purple-900 font-bold">Total</TableHead>
-                            <TableHead className="text-purple-900 font-bold">Status</TableHead>
-                            <TableHead className="text-purple-900 font-bold">Actions</TableHead>
+                            <TableHead className="text-amber-900 font-bold">Date</TableHead>
+                            <TableHead className="text-emerald-900 font-bold">Total</TableHead>
+                            <TableHead className="text-slate-900 font-bold">Status</TableHead>
+                            <TableHead className="text-slate-900 font-bold">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -132,14 +132,14 @@ export default function AdminOrdersPage() {
                         ) : (
                             orders.map((order) => (
                                 <TableRow key={order.id} className="border-slate-200 hover:bg-slate-50">
-                                    <TableCell className="font-mono text-indigo-700 font-medium">{order.id}</TableCell>
+                                    <TableCell className="font-mono text-orange-700 font-medium">{order.id}</TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span className="font-semibold text-blue-900">{order.shippingAddress.fullName}</span>
+                                            <span className="font-semibold text-purple-700">{order.shippingAddress.fullName}</span>
                                             <span className="text-xs text-slate-500">{order.shippingAddress.email}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-stone-600 font-medium">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                                    <TableCell className="text-amber-800 font-medium">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
                                     <TableCell className="text-emerald-700 font-bold">{formatPrice(order.total)}</TableCell>
                                     <TableCell>
                                         <Badge className={getStatusColor(order.status)}>
