@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Plus, Trash2, MapPin } from "lucide-react"
+import { ArrowLeft, Plus, Trash2, MapPin, Pencil } from "lucide-react"
 import Link from "next/link"
 
 export default function AddressesPage() {
-    const { user, addAddress, removeAddress, isLoading } = useAuth()
+    const { user, addAddress, removeAddress, editAddress, isLoading } = useAuth()
     const router = useRouter()
     const [isAdding, setIsAdding] = useState(false)
+    const [editingIndex, setEditingIndex] = useState<number | null>(null)
     const [newAddress, setNewAddress] = useState({
         fullName: "",
         email: "",
@@ -33,7 +34,12 @@ export default function AddressesPage() {
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault()
-        await addAddress(newAddress)
+        if (editingIndex !== null) {
+            await editAddress(editingIndex, newAddress)
+            setEditingIndex(null)
+        } else {
+            await addAddress(newAddress)
+        }
         setIsAdding(false)
         setNewAddress({
             fullName: "",
@@ -45,6 +51,14 @@ export default function AddressesPage() {
             country: "",
             phone: ""
         })
+    }
+
+    const handleEdit = (index: number) => {
+        if (!user) return
+        const addressToEdit = user.addresses[index]
+        setNewAddress(addressToEdit)
+        setEditingIndex(index)
+        setIsAdding(true)
     }
 
     return (
@@ -72,7 +86,7 @@ export default function AddressesPage() {
             {isAdding ? (
                 <Card>
                     <CardHeader>
-                        <CardTitle>Add New Address</CardTitle>
+                        <CardTitle>{editingIndex !== null ? "Edit Address" : "Add New Address"}</CardTitle>
                         <CardDescription>Enter your shipping details below</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -157,8 +171,8 @@ export default function AddressesPage() {
                         </form>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                        <Button variant="outline" onClick={() => setIsAdding(false)}>Cancel</Button>
-                        <Button type="submit" form="address-form">Save Address</Button>
+                        <Button variant="outline" onClick={() => { setIsAdding(false); setEditingIndex(null); }}>Cancel</Button>
+                        <Button type="submit" form="address-form">{editingIndex !== null ? "Update Address" : "Save Address"}</Button>
                     </CardFooter>
                 </Card>
             ) : (
@@ -179,11 +193,20 @@ export default function AddressesPage() {
                                     <p>{addr.phone}</p>
                                     <p>{addr.email}</p>
                                 </CardContent>
-                                <CardFooter>
+                                <CardFooter className="gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="flex-1 gap-2"
+                                        onClick={() => handleEdit(index)}
+                                    >
+                                        <Pencil className="h-4 w-4" />
+                                        Edit
+                                    </Button>
                                     <Button
                                         variant="destructive"
                                         size="sm"
-                                        className="w-full gap-2"
+                                        className="flex-1 gap-2"
                                         onClick={() => removeAddress(index)}
                                     >
                                         <Trash2 className="h-4 w-4" />

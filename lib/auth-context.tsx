@@ -14,6 +14,7 @@ interface AuthContextType {
     isLoading: boolean
     addAddress: (address: Address) => Promise<void>
     removeAddress: (index: number) => Promise<void>
+    editAddress: (index: number, address: Address) => Promise<void>
     updateSettings: (settings: Partial<UserSettings>) => Promise<void>
 }
 
@@ -134,6 +135,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (updatedUser) setUser(updatedUser)
     }
 
+    const editAddress = async (index: number, address: Address) => {
+        if (!user) return
+        const updatedAddresses = [...user.addresses]
+        updatedAddresses[index] = address
+        const updatedUser = await db.updateUser(user.id, { addresses: updatedAddresses })
+        if (updatedUser) setUser(updatedUser)
+    }
+
     const updateSettings = async (settings: Partial<UserSettings>) => {
         if (!user) return
         const updatedSettings = { ...user.settings, ...settings }
@@ -142,7 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, isLoading, addAddress, removeAddress, updateSettings }}>
+        <AuthContext.Provider value={{ user, login, register, logout, isLoading, addAddress, removeAddress, editAddress, updateSettings }}>
             {children}
         </AuthContext.Provider>
     )
