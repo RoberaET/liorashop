@@ -5,10 +5,12 @@ import Link from "next/link"
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { useLanguage } from "@/lib/language-context"
 import { useStore } from "@/lib/store"
 import { formatPrice } from "@/lib/utils"
 
 export function CartContent() {
+  const { t } = useLanguage()
   const cart = useStore((state) => state.cart)
   const removeFromCart = useStore((state) => state.removeFromCart)
   const updateQuantity = useStore((state) => state.updateQuantity)
@@ -23,10 +25,10 @@ export function CartContent() {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto text-center">
           <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
-          <h1 className="text-2xl font-serif font-bold mb-4">Your cart is empty</h1>
+          <h1 className="text-2xl font-serif font-bold mb-4">{t.cart.empty}</h1>
           <p className="text-muted-foreground mb-8">Looks like you haven't added anything to your cart yet.</p>
           <Button asChild size="lg">
-            <Link href="/">Start Shopping</Link>
+            <Link href="/">{t.cart.continueShopping}</Link>
           </Button>
         </div>
       </div>
@@ -35,7 +37,7 @@ export function CartContent() {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-      <h1 className="text-3xl font-serif font-bold mb-8">Shopping Cart</h1>
+      <h1 className="text-3xl font-serif font-bold mb-8">{t.cart.title}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
@@ -134,7 +136,7 @@ export function CartContent() {
                   onClick={() => removeFromCart(item.product.id)}
                 >
                   <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Remove item</span>
+                  <span className="sr-only">{t.cart.remove}</span>
                 </Button>
               </div>
             </div>
@@ -148,7 +150,7 @@ export function CartContent() {
 
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-muted-foreground">{t.cart.subtotal}</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between">
@@ -169,7 +171,7 @@ export function CartContent() {
 
             <Button asChild className="w-full mt-6 gap-2" size="lg">
               <Link href="/checkout">
-                Proceed to Checkout
+                {t.cart.checkout}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>

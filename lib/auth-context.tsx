@@ -9,9 +9,12 @@ import { useStore } from "./store"
 interface AuthContextType {
     user: User | null
     login: (email: string, password: string) => Promise<void>
-    register: (data: Omit<RegisteredUser, "id" | "role">) => Promise<void>
+    register: (data: Pick<RegisteredUser, "name" | "email" | "password">) => Promise<void>
     logout: () => void
     isLoading: boolean
+    addAddress: (address: Address) => Promise<void>
+    removeAddress: (index: number) => Promise<void>
+    updateSettings: (settings: Partial<UserSettings>) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)

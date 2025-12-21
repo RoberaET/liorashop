@@ -72,30 +72,31 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
-          <div className="space-y-4">
-            <h3 className="font-semibold">{t.footer.legal}</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
-                  {t.footer.privacyPolicy}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
-                  {t.footer.termsOfService}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
-                  {t.footer.cookiePolicy}
-                </Link>
-              </li>
-            </ul>
+          {/* Legal & Contact */}
+          <div className="space-y-8">
+            <div>
+              <h3 className="font-serif text-lg font-bold mb-4">{t.footer.legal}</h3>
+              <ul className="space-y-2 text-sm text-neutral-400">
+                <li><Link href="/privacy-policy" className="hover:text-white transition-colors">{t.footer.privacyPolicy}</Link></li>
+                <li><Link href="/terms-of-service" className="hover:text-white transition-colors">{t.footer.termsOfService}</Link></li>
+                <li><Link href="/cookie-policy" className="hover:text-white transition-colors">{t.footer.cookiePolicy}</Link></li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h3 className="font-serif text-lg font-bold mb-4">{t.footer.contactUs}</h3>
+              <ul className="space-y-2 text-sm text-neutral-400">
+                <li><Link href="/faq" className="hover:text-white transition-colors">{t.footer.faqs}</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">info@liorashop.com</Link></li>
+                <li><a href="tel:+251911234567" className="hover:text-white transition-colors">+251 911 234 567</a></li>
+                <li>Addis Ababa, Ethiopia</li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border text-center text-sm text-muted-foreground">
+        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-neutral-500">
           <p>&copy; {new Date().getFullYear()} LIORA SHOP. {t.footer.rightsReserved}</p>
         </div>
       </div>

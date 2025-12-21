@@ -5,6 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+import { useLanguage } from "@/lib/language-context"
+
 interface ProductFiltersProps {
   min: number
   max: number
@@ -13,12 +15,13 @@ interface ProductFiltersProps {
 }
 
 export function ProductFilters({ min, max, priceRange, onPriceChange }: ProductFiltersProps) {
+  const { t } = useLanguage()
   return (
     <div className="space-y-6">
       <Accordion type="multiple" className="w-full" defaultValue={["price"]}>
         {/* Price Filter */}
         <AccordionItem value="price">
-          <AccordionTrigger className="text-sm font-semibold">Price Range</AccordionTrigger>
+          <AccordionTrigger className="text-sm font-semibold">{t.filters.priceRange}</AccordionTrigger>
           <AccordionContent>
             <div className="pt-2 space-y-4">
               <Slider
@@ -39,19 +42,19 @@ export function ProductFilters({ min, max, priceRange, onPriceChange }: ProductF
 
         {/* Availability Filter */}
         <AccordionItem value="availability">
-          <AccordionTrigger className="text-sm font-semibold">Availability</AccordionTrigger>
+          <AccordionTrigger className="text-sm font-semibold">{t.filters.availability}</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-3 pt-2">
               <div className="flex items-center space-x-2">
                 <Checkbox id="in-stock" defaultChecked />
                 <Label htmlFor="in-stock" className="text-sm font-normal">
-                  In Stock
+                  {t.filters.inStock}
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox id="out-of-stock" />
                 <Label htmlFor="out-of-stock" className="text-sm font-normal">
-                  Out of Stock
+                  {t.filters.outOfStock}
                 </Label>
               </div>
             </div>
@@ -60,14 +63,14 @@ export function ProductFilters({ min, max, priceRange, onPriceChange }: ProductF
 
         {/* Rating Filter */}
         <AccordionItem value="rating">
-          <AccordionTrigger className="text-sm font-semibold">Rating</AccordionTrigger>
+          <AccordionTrigger className="text-sm font-semibold">{t.filters.rating}</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-3 pt-2">
               {[4, 3, 2, 1].map((rating) => (
                 <div key={rating} className="flex items-center space-x-2">
                   <Checkbox id={`rating-${rating}`} />
                   <Label htmlFor={`rating-${rating}`} className="text-sm font-normal">
-                    {rating}+ Stars
+                    {rating}+ {t.filters.stars}
                   </Label>
                 </div>
               ))}
@@ -77,7 +80,7 @@ export function ProductFilters({ min, max, priceRange, onPriceChange }: ProductF
 
         {/* Tags Filter */}
         <AccordionItem value="tags">
-          <AccordionTrigger className="text-sm font-semibold">Tags</AccordionTrigger>
+          <AccordionTrigger className="text-sm font-semibold">{t.filters.tags}</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-3 pt-2">
               {["Bestseller", "Popular", "Premium", "Sustainable"].map((tag) => (

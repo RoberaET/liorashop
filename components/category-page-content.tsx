@@ -5,6 +5,8 @@ import { ProductFilters } from "@/components/product-filters"
 import { ProductCard } from "@/components/product-card"
 import { Product, Category } from "@/lib/types"
 
+import { useLanguage } from "@/lib/language-context"
+
 interface CategoryPageContentProps {
     initialProducts: Product[]
     category: Category
@@ -12,6 +14,7 @@ interface CategoryPageContentProps {
 }
 
 export function CategoryPageContent({ initialProducts, category, slug }: CategoryPageContentProps) {
+    const { t } = useLanguage()
     // 1. Calculate dynamic price range
     const { minPrice, maxPrice } = useMemo(() => {
         if (initialProducts.length === 0) return { minPrice: 0, maxPrice: 1000 }
@@ -61,14 +64,14 @@ export function CategoryPageContent({ initialProducts, category, slug }: Categor
             <section className={`relative pt-3 pb-3 md:pt-5 md:pb-5 ${headerColor}`}>
                 <div className="container mx-auto px-4">
                     <nav className={`text-xs mb-1 flex justify-start items-center ${slug === "cosmetics" || slug === "shoes" ? "text-white/80" : "text-muted-foreground"}`}>
-                        <span>Home</span>
+                        <span>{t.product.home}</span>
                         <span className="mx-2">/</span>
                         <span className={slug === "cosmetics" || slug === "shoes" ? "text-white" : "text-foreground"}>{category.name}</span>
                     </nav>
                     <div className="text-center">
                         <h1 className="text-2xl md:text-4xl font-serif font-bold mb-0.5">{category.name}</h1>
                     </div>
-                    <p className={`text-xs text-left ${slug === "cosmetics" || slug === "shoes" ? "text-white/80" : "text-muted-foreground"}`}>{filteredProducts.length} products</p>
+                    <p className={`text-xs text-left ${slug === "cosmetics" || slug === "shoes" ? "text-white/80" : "text-muted-foreground"}`}>{filteredProducts.length} {t.cart.items}</p>
                 </div>
             </section>
 
@@ -96,7 +99,7 @@ export function CategoryPageContent({ initialProducts, category, slug }: Categor
 
                             {filteredProducts.length === 0 && (
                                 <div className="text-center py-12">
-                                    <p className="text-muted-foreground">No products found matching your criteria.</p>
+                                    <p className="text-muted-foreground">{t.category.noProducts}</p>
                                 </div>
                             )}
                         </div>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/lib/auth-context"
+import { useLanguage } from "@/lib/language-context"
 
 export function RegisterForm() {
   const [name, setName] = useState("")
@@ -16,20 +17,21 @@ export function RegisterForm() {
   const [error, setError] = useState("")
 
   const { register, isLoading } = useAuth()
+  const { t } = useLanguage()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters long")
+      setError(t.auth.passwordRequirements)
       return
     }
 
     try {
       await register({ name, email, password })
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create account")
+      setError(err instanceof Error ? err.message : t.common.error)
     }
   }
 
@@ -42,11 +44,11 @@ export function RegisterForm() {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="name">Full Name</Label>
+        <Label htmlFor="name">{t.common.fullName}</Label>
         <Input
           id="name"
           type="text"
-          placeholder="John Doe"
+          placeholder={t.auth.namePlaceholder}
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -55,11 +57,11 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t.common.email}</Label>
         <Input
           id="email"
           type="email"
-          placeholder="you@example.com"
+          placeholder={t.auth.emailPlaceholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -68,12 +70,12 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t.common.password}</Label>
         <div className="relative">
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Create a password"
+            placeholder={t.auth.passwordPlaceholder}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -94,17 +96,17 @@ export function RegisterForm() {
             <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">Must be at least 6 characters long</p>
+        <p className="text-xs text-muted-foreground">{t.auth.passwordRequirements}</p>
       </div>
 
       <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creating Account...
+            {t.common.loading}
           </>
         ) : (
-          "Create Account"
+          t.auth.registerTitle
         )}
       </Button>
     </form>

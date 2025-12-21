@@ -161,7 +161,7 @@ export function Navbar() {
                   )}
                   {searchQuery && searchResults.length === 0 && (
                     <div className="absolute top-full left-0 w-full mt-2 bg-background border border-border rounded-md shadow-lg z-50 p-4 text-center text-sm text-muted-foreground">
-                      No results found
+                      {t.navbar.noResults}
                     </div>
                   )}
                 </div>
@@ -216,15 +216,15 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link href="/account">My Account</Link>
+                    <Link href="/account">{t.navbar.myAccount}</Link>
                   </DropdownMenuItem>
                   {currentUser.role === 'admin' && (
                     <DropdownMenuItem asChild>
-                      <Link href="/admin/dashboard">Admin Dashboard</Link>
+                      <Link href="/admin/dashboard">{t.navbar.adminDashboard}</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem onClick={logout}>
-                    Logout
+                    {t.navbar.logout}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

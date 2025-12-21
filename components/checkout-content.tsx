@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -25,6 +24,7 @@ import { formatPrice } from "@/lib/utils"
 import type { Order } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
 import { db } from "@/lib/db"
+import { useLanguage } from "@/lib/language-context"
 
 const COUPONS: { [key: string]: number } = {
   "LOVE": 0.10,
@@ -32,6 +32,7 @@ const COUPONS: { [key: string]: number } = {
 
 export function CheckoutContent() {
   const router = useRouter()
+  const { t } = useLanguage()
   const cart = useStore((state) => state.cart)
   const addresses = useStore((state) => state.addresses)
   const clearCart = useStore((state) => state.clearCart)
@@ -75,7 +76,7 @@ export function CheckoutContent() {
       setAppliedDiscount(discount)
       setCouponError(null)
     } else {
-      setCouponError("Invalid coupon code")
+      setCouponError(t.checkout.couponError)
       setAppliedDiscount(null)
     }
   }
@@ -103,10 +104,10 @@ export function CheckoutContent() {
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto text-center">
-          <h1 className="text-2xl font-serif font-bold mb-4">Your cart is empty</h1>
+          <h1 className="text-2xl font-serif font-bold mb-4">{t.cart.empty}</h1>
           <p className="text-muted-foreground mb-8">Add items to your cart to proceed with checkout.</p>
           <Button asChild size="lg">
-            <Link href="/">Start Shopping</Link>
+            <Link href="/">{t.cart.continueShopping}</Link>
           </Button>
         </div>
       </div>
@@ -179,13 +180,13 @@ export function CheckoutContent() {
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Cart
+          {t.checkout.backToCart}
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Checkout Form */}
           <div className="lg:col-span-3">
-            <h1 className="text-2xl font-serif font-bold mb-8">Checkout</h1>
+            <h1 className="text-2xl font-serif font-bold mb-8">{t.checkout.title}</h1>
 
             {/* Progress Steps */}
             <div className="flex items-center gap-4 mb-8">
@@ -197,7 +198,7 @@ export function CheckoutContent() {
                 >
                   1
                 </span>
-                <span className="text-sm font-medium">Shipping</span>
+                <span className="text-sm font-medium">{t.checkout.shipping}</span>
               </div>
               <div className="flex-1 h-px bg-border" />
               <div
@@ -208,7 +209,7 @@ export function CheckoutContent() {
                 >
                   2
                 </span>
-                <span className="text-sm font-medium">Payment</span>
+                <span className="text-sm font-medium">{t.checkout.payment}</span>
               </div>
             </div>
 
@@ -216,12 +217,12 @@ export function CheckoutContent() {
             {step === "shipping" && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Shipping Information</CardTitle>
+                  <CardTitle>{t.checkout.shippingInfo}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {addresses.length > 0 && (
                     <div className="mb-6 space-y-2">
-                      <Label>Saved Addresses</Label>
+                      <Label>{t.checkout.savedAddresses}</Label>
                       <Select
                         onValueChange={(value) => {
                           const address = addresses[parseInt(value)]
@@ -240,7 +241,7 @@ export function CheckoutContent() {
                         }}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a saved address" />
+                          <SelectValue placeholder={t.checkout.selectAddress} />
                         </SelectTrigger>
                         <SelectContent>
                           {addresses.map((addr, idx) => (
@@ -252,7 +253,7 @@ export function CheckoutContent() {
                       </Select>
                       <div className="flex items-center gap-2">
                         <Separator className="flex-1" />
-                        <span className="text-xs text-muted-foreground">OR</span>
+                        <span className="text-xs text-muted-foreground">{t.checkout.or}</span>
                         <Separator className="flex-1" />
                       </div>
                     </div>
@@ -260,32 +261,21 @@ export function CheckoutContent() {
                   <form onSubmit={handleShippingSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="fullName">Full Name</Label>
+                        <Label htmlFor="fullName">{t.checkout.fullName}</Label>
                         <Input
                           id="fullName"
-                          placeholder="Abebe Kebede"
+                          placeholder={t.auth.namePlaceholder}
                           value={shippingForm.fullName}
                           onChange={(e) => setShippingForm({ ...shippingForm, fullName: e.target.value })}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">{t.checkout.email}</Label>
                         <Input
                           id="email"
                           type="email"
-                          placeholder="abebe@gmail.com"
-                          value={shippingForm.email}
-                          onChange={(e) => setShippingForm({ ...shippingForm, email: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="abebe@gmail.com"
+                          placeholder={t.auth.emailPlaceholder}
                           value={shippingForm.email}
                           onChange={(e) => setShippingForm({ ...shippingForm, email: e.target.value })}
                           required
@@ -294,7 +284,7 @@ export function CheckoutContent() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">{t.checkout.phone}</Label>
                       <Input
                         id="phone"
                         type="tel"
@@ -306,7 +296,7 @@ export function CheckoutContent() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="street">Street Address</Label>
+                      <Label htmlFor="street">{t.checkout.street}</Label>
                       <Input
                         id="street"
                         placeholder="Bole Rwanda Rd."
@@ -317,26 +307,40 @@ export function CheckoutContent() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        placeholder="Addis Ababa"
-                        value={shippingForm.city}
-                        onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })}
-                        required
-                      />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="city">{t.checkout.city}</Label>
+                          <Input
+                            id="city"
+                            placeholder="Addis Ababa"
+                            value={shippingForm.city}
+                            onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })}
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="zipCode">{t.checkout.zipCode}</Label>
+                          <Input
+                            id="zipCode"
+                            placeholder="1000"
+                            value={shippingForm.zipCode}
+                            onChange={(e) => setShippingForm({ ...shippingForm, zipCode: e.target.value })}
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     {/* Shipping Method */}
                     <div className="space-y-4 pt-4">
-                      <Label>Shipping Method</Label>
+                      <Label>{t.checkout.shippingMethod}</Label>
                       <RadioGroup value={shippingMethod} onValueChange={setShippingMethod}>
                         <div className="flex items-center space-x-4 p-4 border border-border rounded-lg w-full">
                           <RadioGroupItem value="standard" id="standard" />
                           <Label htmlFor="standard" className="flex-1 cursor-pointer w-full">
                             <div className="flex justify-between items-center w-full">
                               <div>
-                                <p className="font-medium">Standard Shipping</p>
+                                <p className="font-medium">{t.checkout.standard}</p>
                                 <p className="text-sm text-muted-foreground">1 - 2 days</p>
                               </div>
                               <span className="font-medium">Free</span>
@@ -348,7 +352,7 @@ export function CheckoutContent() {
                           <Label htmlFor="express" className="flex-1 cursor-pointer w-full">
                             <div className="flex justify-between items-center w-full">
                               <div>
-                                <p className="font-medium">Express Shipping</p>
+                                <p className="font-medium">{t.checkout.express}</p>
                                 <p className="text-sm text-muted-foreground">maximum 2 hour</p>
                               </div>
                               <span className="font-medium">ETB 300.00</span>
@@ -359,7 +363,7 @@ export function CheckoutContent() {
                     </div>
 
                     <Button type="submit" size="lg" className="w-full">
-                      Continue to Payment
+                      {t.checkout.payment}
                     </Button>
                   </form>
                 </CardContent>
@@ -373,7 +377,7 @@ export function CheckoutContent() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5" />
-                      Payment Details
+                      {t.checkout.paymentDetails}
                     </CardTitle>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Lock className="h-4 w-4" />
@@ -386,10 +390,10 @@ export function CheckoutContent() {
                     <div className="bg-muted p-4 rounded-lg space-y-4">
                       <div className="flex items-center gap-2 mb-2">
                         <Lock className="h-4 w-4" />
-                        <h3 className="font-semibold">Payment Options</h3>
+                        <h3 className="font-semibold">{t.checkout.paymentOptions}</h3>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Payment regarding your order will be done once the item is safely delivered.
+                        {t.checkout.paymentNote}
                       </p>
 
                       <div className="space-y-3 mt-4 text-sm">
@@ -425,9 +429,9 @@ export function CheckoutContent() {
                       </div>
 
                       <div className="mt-4 p-3 bg-yellow-500/10 rounded border border-yellow-500/50 text-sm">
-                        <p className="font-medium text-yellow-600 mb-1">Important Warning:</p>
+                        <p className="font-medium text-yellow-600 mb-1">{t.checkout.importantWarning}</p>
                         <p className="text-muted-foreground">
-                          Please carefully check the account name and number before transferring any money.
+                          {t.checkout.warningText}
                         </p>
                       </div>
                     </div>
@@ -438,16 +442,16 @@ export function CheckoutContent() {
                         variant="outline"
                         onClick={() => setStep("shipping")}
                       >
-                        Back
+                        {t.checkout.back}
                       </Button>
                       <Button type="submit" size="lg" className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90" disabled={isProcessing || isLoading}>
                         {isProcessing ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Processing...
+                            {t.checkout.processing}
                           </>
                         ) : (
-                          `Confirm Order - ${formatPrice(total)}`
+                          `${t.checkout.confirmOrder} - ${formatPrice(total)}`
                         )}
                       </Button>
                     </div>
@@ -461,7 +465,7 @@ export function CheckoutContent() {
           <div className="lg:col-span-2">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
+                <CardTitle>{t.checkout.orderSummary}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Items */}
@@ -491,14 +495,14 @@ export function CheckoutContent() {
                 <div className="space-y-2">
                   <div className="flex gap-2">
                     <Input
-                      placeholder="Coupon Code"
+                      placeholder={t.checkout.couponPlaceholder}
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                     />
-                    <Button variant="outline" onClick={handleApplyCoupon}>Apply</Button>
+                    <Button variant="outline" onClick={handleApplyCoupon}>{t.checkout.apply}</Button>
                   </div>
                   {couponError && <p className="text-xs text-red-500">{couponError}</p>}
-                  {appliedDiscount && <p className="text-xs text-green-500">Coupon applied successfully!</p>}
+                  {appliedDiscount && <p className="text-xs text-green-500">{t.checkout.copuonSuccess}</p>}
                 </div>
 
                 <Separator />
@@ -506,16 +510,16 @@ export function CheckoutContent() {
                 {/* Totals */}
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-muted-foreground">{t.cart.subtotal}</span>
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-muted-foreground">{t.checkout.shipping}</span>
                     <span>{shippingCost === 0 ? "Free" : formatPrice(shippingCost)}</span>
                   </div>
                   {appliedDiscount && (
                     <div className="flex justify-between text-primary">
-                      <span>Discount ({appliedDiscount * 100}%)</span>
+                      <span>{t.checkout.discount} ({appliedDiscount * 100}%)</span>
                       <span>-{formatPrice(discountAmount)}</span>
                     </div>
                   )}
@@ -525,7 +529,7 @@ export function CheckoutContent() {
                 <Separator />
 
                 <div className="flex justify-between font-semibold text-lg text-primary">
-                  <span>Total</span>
+                  <span>{t.cart.total}</span>
                   <span>{formatPrice(total)}</span>
                 </div>
               </CardContent>
