@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 
-    const { cart, wishlist, setCart, setWishlist, clearCart, setOrders } = useStore()
+    const { cart, wishlist, setCart, setWishlist, clearCart, setOrders, addresses, setAddresses } = useStore()
 
     // Sync Cart & Wishlist with DB when they change
     useEffect(() => {
@@ -37,6 +37,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [wishlist, user])
 
     useEffect(() => {
+        if (user) {
+            db.saveAddresses(user.id, addresses)
+        }
+    }, [addresses, user])
+
+    useEffect(() => {
         const initAuth = async () => {
             const storedUser = localStorage.getItem("liora_user")
             if (storedUser) {
@@ -47,9 +53,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 const userCart = db.getCart(parsedUser.id)
                 const userWishlist = db.getWishlist(parsedUser.id)
                 const userOrders = db.getOrders(parsedUser.id)
+                const userAddresses = db.getAddresses(parsedUser.id)
                 setCart(userCart)
                 setWishlist(userWishlist)
                 setOrders(userOrders)
+                setAddresses(userAddresses)
             }
             setIsLoading(false)
         }
@@ -69,9 +77,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const userCart = db.getCart(user.id)
             const userWishlist = db.getWishlist(user.id)
             const userOrders = db.getOrders(user.id)
+            const userAddresses = db.getAddresses(user.id)
             setCart(userCart)
             setWishlist(userWishlist)
             setOrders(userOrders)
+            setAddresses(userAddresses)
 
             if (user.role === 'admin') router.push('/admin/dashboard')
             else router.push('/')
@@ -103,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         clearCart()
         setWishlist([])
         setOrders([])
+        setAddresses([])
         router.push("/login")
     }
 

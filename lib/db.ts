@@ -7,13 +7,14 @@ interface DBSchema {
     orders: Record<string, Order[]> // userId -> orders
     carts: Record<string, any[]> // userId -> cart items
     wishlists: Record<string, any[]> // userId -> wishlist items
+    addresses: Record<string, any[]> // userId -> addresses
 }
 
 const getDB = (): DBSchema => {
-    if (typeof window === "undefined") return { users: [], orders: {}, carts: {}, wishlists: {} }
+    if (typeof window === "undefined") return { users: [], orders: {}, carts: {}, wishlists: {}, addresses: {} }
     const stored = localStorage.getItem(DB_KEY)
     if (!stored) {
-        const initial: DBSchema = { users: [], orders: {}, carts: {}, wishlists: {} }
+        const initial: DBSchema = { users: [], orders: {}, carts: {}, wishlists: {}, addresses: {} }
         localStorage.setItem(DB_KEY, JSON.stringify(initial))
         return initial
     }
@@ -135,5 +136,24 @@ export const db = {
         const db = getDB()
         db.wishlists[userId] = wishlist
         saveDB(db)
+    },
+
+    // Addresses Methods
+    getAddresses: (userId: string) => {
+        const db = getDB()
+        return db.addresses?.[userId] || []
+    },
+
+    saveAddresses: (userId: string, addresses: any[]) => {
+        const db = getDB()
+        if (!db.addresses) db.addresses = {}
+        db.addresses[userId] = addresses
+        saveDB(db)
+    },
+
+    // Admin Methods
+    getAllUsers: () => {
+        const db = getDB()
+        return db.users
     }
 }

@@ -34,6 +34,7 @@ interface StoreState {
 
   // Addresses
   addresses: Address[]
+  setAddresses: (addresses: Address[]) => void
   addAddress: (address: Address) => void
   removeAddress: (index: number) => void
 }
@@ -114,6 +115,7 @@ export const useStore = create<StoreState>((set, get) => ({
 
   // Addresses
   addresses: [],
+  setAddresses: (addresses) => set({ addresses }),
   addAddress: (address) => set((state) => ({ addresses: [...state.addresses, address] })),
   removeAddress: (index) =>
     set((state) => ({

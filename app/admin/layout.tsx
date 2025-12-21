@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useStore } from "@/lib/store"
 import { AdminSidebar } from "@/components/admin-sidebar"
-import { useMounted } from "@/hooks/use-mounted"
+import { useAuth } from "@/lib/auth-context"
 
 export default function AdminLayout({
     children,
@@ -12,22 +11,21 @@ export default function AdminLayout({
     children: React.ReactNode
 }) {
     const router = useRouter()
-    const user = useStore((state) => state.user)
-    const mounted = useMounted()
+    const { user, isLoading } = useAuth()
     const [isAuthorized, setIsAuthorized] = useState(false)
 
     useEffect(() => {
-        if (mounted) {
+        if (!isLoading) {
             if (!user || user.role !== "admin") {
                 router.push("/")
             } else {
                 setIsAuthorized(true)
             }
         }
-    }, [mounted, user, router])
+    }, [isLoading, user, router])
 
-    if (!mounted || !isAuthorized) {
-        return null
+    if (isLoading || !isAuthorized) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>
     }
 
     return (
