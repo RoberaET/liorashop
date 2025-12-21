@@ -100,47 +100,47 @@ export default function AdminOrdersPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
-                <p className="text-muted-foreground">Manage and update customer orders.</p>
+                <h2 className="text-3xl font-bold tracking-tight text-purple-950">Orders</h2>
+                <p className="text-slate-600">Manage and update customer orders.</p>
             </div>
 
-            <div className="border rounded-md bg-white">
+            <div className="border border-slate-200 rounded-md bg-white">
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead>Order ID</TableHead>
-                            <TableHead>Customer</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Total</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Actions</TableHead>
+                        <TableRow className="border-slate-200 hover:bg-slate-50">
+                            <TableHead className="text-purple-900 font-bold">Order ID</TableHead>
+                            <TableHead className="text-purple-900 font-bold">Customer</TableHead>
+                            <TableHead className="text-purple-900 font-bold">Date</TableHead>
+                            <TableHead className="text-purple-900 font-bold">Total</TableHead>
+                            <TableHead className="text-purple-900 font-bold">Status</TableHead>
+                            <TableHead className="text-purple-900 font-bold">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                                <TableCell colSpan={6} className="text-center h-24 text-slate-500">
                                     Loading orders...
                                 </TableCell>
                             </TableRow>
                         ) : orders.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                                <TableCell colSpan={6} className="text-center h-24 text-slate-500">
                                     No orders found.
                                 </TableCell>
                             </TableRow>
                         ) : (
                             orders.map((order) => (
-                                <TableRow key={order.id}>
-                                    <TableCell className="font-mono">{order.id}</TableCell>
+                                <TableRow key={order.id} className="border-slate-200 hover:bg-slate-50">
+                                    <TableCell className="font-mono text-indigo-700 font-medium">{order.id}</TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span className="font-medium">{order.shippingAddress.fullName}</span>
-                                            <span className="text-xs text-muted-foreground">{order.shippingAddress.email}</span>
+                                            <span className="font-semibold text-blue-900">{order.shippingAddress.fullName}</span>
+                                            <span className="text-xs text-slate-500">{order.shippingAddress.email}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
-                                    <TableCell>{formatPrice(order.total)}</TableCell>
+                                    <TableCell className="text-stone-600 font-medium">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                                    <TableCell className="text-emerald-700 font-bold">{formatPrice(order.total)}</TableCell>
                                     <TableCell>
                                         <Badge className={getStatusColor(order.status)}>
                                             {order.status}
@@ -152,21 +152,21 @@ export default function AdminOrdersPage() {
                                                 defaultValue={order.status}
                                                 onValueChange={(value) => handleStatusUpdate(order.id, value as Order["status"])}
                                             >
-                                                <SelectTrigger className="w-[130px]">
+                                                <SelectTrigger className="w-[130px] border-slate-300 text-slate-900">
                                                     <SelectValue />
                                                 </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="pending">Pending</SelectItem>
-                                                    <SelectItem value="confirmed">Confirmed</SelectItem>
-                                                    <SelectItem value="shipped">Shipped</SelectItem>
-                                                    <SelectItem value="delivered">Delivered</SelectItem>
-                                                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                                                <SelectContent className="bg-white border-slate-200">
+                                                    <SelectItem value="pending" className="text-slate-900 focus:bg-slate-100 focus:text-slate-900">Pending</SelectItem>
+                                                    <SelectItem value="confirmed" className="text-slate-900 focus:bg-slate-100 focus:text-slate-900">Confirmed</SelectItem>
+                                                    <SelectItem value="shipped" className="text-slate-900 focus:bg-slate-100 focus:text-slate-900">Shipped</SelectItem>
+                                                    <SelectItem value="delivered" className="text-slate-900 focus:bg-slate-100 focus:text-slate-900">Delivered</SelectItem>
+                                                    <SelectItem value="cancelled" className="text-slate-900 focus:bg-slate-100 focus:text-slate-900">Cancelled</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                className="text-red-500 hover:text-red-600 hover:bg-red-50"
                                                 onClick={() => {
                                                     if (window.confirm("Are you sure you want to delete this order?")) {
                                                         handleDeleteOrder(order.id)

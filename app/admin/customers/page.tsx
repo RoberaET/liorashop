@@ -71,8 +71,8 @@ export default function AdminCustomersPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
-                    <p className="text-muted-foreground">Manage your customer base</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-teal-950">Customers</h1>
+                    <p className="text-slate-600">Manage your customer base</p>
                 </div>
             </div>
 
@@ -84,76 +84,76 @@ export default function AdminCustomersPage() {
                         <p className="text-slate-600 text-sm">
                             The temporary password for the user is:
                         </p>
-                        <div className="p-3 bg-slate-100 rounded text-center font-mono text-lg font-bold select-all border border-slate-200">
+                        <div className="p-3 bg-slate-100 rounded text-center font-mono text-lg font-bold select-all border border-slate-200 text-slate-900">
                             {resetResult.password}
                         </div>
                         <p className="text-xs text-slate-500">
                             Copy this password and send it to the user. They will be asked to change it upon login.
                         </p>
-                        <Button className="w-full" onClick={() => setResetResult(null)}>
+                        <Button className="w-full bg-slate-900 text-white hover:bg-slate-800" onClick={() => setResetResult(null)}>
                             Close
                         </Button>
                     </div>
                 </div>
             )}
 
-            <Card>
+            <Card className="border-slate-200 bg-white shadow-sm">
                 <CardHeader>
                     <div className="flex items-center justify-between">
-                        <CardTitle>All Users ({users.length})</CardTitle>
+                        <CardTitle className="text-teal-950">All Users ({users.length})</CardTitle>
                         <div className="relative w-64">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
                             <Input
                                 placeholder="Search user..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-8"
+                                className="pl-8 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-slate-400"
                             />
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="rounded-md border">
+                    <div className="rounded-md border border-slate-200">
                         <Table>
                             <TableHeader>
-                                <TableRow>
-                                    <TableHead>User</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    <TableHead>Joined</TableHead>
-                                    <TableHead>Addresses</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Actions</TableHead>
+                                <TableRow className="border-slate-200 hover:bg-slate-50">
+                                    <TableHead className="text-teal-900 font-bold">User</TableHead>
+                                    <TableHead className="text-teal-900 font-bold">Role</TableHead>
+                                    <TableHead className="text-teal-900 font-bold">Joined</TableHead>
+                                    <TableHead className="text-teal-900 font-bold">Addresses</TableHead>
+                                    <TableHead className="text-teal-900 font-bold">Status</TableHead>
+                                    <TableHead className="text-teal-900 font-bold">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {filteredUsers.map((user) => (
-                                    <TableRow key={user.id}>
+                                    <TableRow key={user.id} className="border-slate-200 hover:bg-slate-50">
                                         <TableCell>
                                             <div className="flex flex-col">
-                                                <span className="font-medium flex items-center gap-2">
-                                                    <UserIcon className="h-3 w-3" /> {user.name}
+                                                <span className="font-semibold flex items-center gap-2 text-blue-900">
+                                                    <UserIcon className="h-3 w-3 text-slate-500" /> {user.name}
                                                 </span>
-                                                <span className="text-xs text-muted-foreground flex items-center gap-2">
+                                                <span className="text-xs text-slate-500 flex items-center gap-2">
                                                     <Mail className="h-3 w-3" /> {user.email}
                                                 </span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant={user.role === 'admin' ? "default" : "secondary"}>
+                                            <Badge variant={user.role === 'admin' ? "default" : "secondary"} className={user.role === 'admin' ? "bg-purple-900 hover:bg-purple-800" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}>
                                                 {user.role}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="text-muted-foreground text-sm">
+                                        <TableCell className="text-stone-600 font-medium text-sm">
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="h-3 w-3" />
                                                 {formatDate(user.createdAt)}
                                             </div>
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-slate-700 font-bold">
                                             {user.addresses?.length || 0} Saved
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+                                            <Badge variant="outline" className="text-emerald-700 border-emerald-200 bg-emerald-50">
                                                 Active
                                             </Badge>
                                         </TableCell>
@@ -164,7 +164,7 @@ export default function AdminCustomersPage() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-slate-200"
                                                             onClick={() => handleResetPassword(user.id)}
                                                         >
                                                             Reset Password
@@ -172,6 +172,7 @@ export default function AdminCustomersPage() {
                                                         <Button
                                                             variant="destructive"
                                                             size="sm"
+                                                            className="bg-red-500 hover:bg-red-600"
                                                             onClick={() => handleDeleteUser(user.id)}
                                                         >
                                                             <Trash2 className="h-4 w-4" />
@@ -184,7 +185,7 @@ export default function AdminCustomersPage() {
                                 ))}
                                 {filteredUsers.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                                        <TableCell colSpan={6} className="text-center py-8 text-slate-500">
                                             No users found.
                                         </TableCell>
                                     </TableRow>
