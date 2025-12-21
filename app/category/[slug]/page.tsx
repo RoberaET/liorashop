@@ -38,7 +38,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <Navbar />
       <main className="flex-1">
         {/* Header */}
-        <section className={`relative pt-2 pb-8 md:pt-4 md:pb-10 ${slug === "perfumes" ? "bg-secondary" : "bg-muted/30"}`}>
+        <section className={`relative pt-2 pb-2 md:pt-4 md:pb-4 ${slug === "perfumes" ? "bg-secondary" : "bg-muted/30"}`}>
           <div className="container mx-auto px-4">
             <nav className="text-xs text-muted-foreground mb-1">
               <span>Home</span>
@@ -51,7 +51,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </section>
 
         {/* Products */}
-        <section className={`pb-12 md:pb-16 -mt-4 md:-mt-6 relative z-10 ${slug === "perfumes" ? "bg-transparent" : ""}`}>
+        <section className={`py-8 md:py-12 ${slug === "perfumes" ? "bg-transparent" : ""}`}>
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Sidebar Filters */}
