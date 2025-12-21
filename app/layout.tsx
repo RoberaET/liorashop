@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { LanguageProvider } from "@/lib/language-context"
+import { AuthProvider } from "@/lib/auth-context"
 import { FlyAnimationProvider } from "@/components/fly-animation-provider"
 import { Toaster } from "@/components/ui/toaster"
 
@@ -34,11 +35,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
         <LanguageProvider>
-          <FlyAnimationProvider>
-            {children}
-            <Analytics />
-            <Toaster />
-          </FlyAnimationProvider>
+          <AuthProvider>
+            <FlyAnimationProvider>
+              {children}
+              <Analytics />
+              <Toaster />
+            </FlyAnimationProvider>
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>

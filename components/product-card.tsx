@@ -20,6 +20,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useFlyAnimation } from "@/components/fly-animation-provider"
+import { useAuth } from "@/lib/auth-context"
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation"
 
 interface ProductCardProps {
   product: Product
@@ -59,8 +62,22 @@ export function ProductCard({ product }: ProductCardProps) {
     return () => clearInterval(interval)
   }, [isHovered, images.length])
 
+  const { user } = useAuth()
+  const router = useRouter()
+  const { toast } = useToast()
+
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault()
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to add items to your wishlist.",
+        variant: "destructive",
+      })
+      router.push("/login")
+      return
+    }
 
     // Trigger Animation
     const targetId = "nav-wishlist-icon"
@@ -82,6 +99,16 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to add items to your cart.",
+        variant: "destructive",
+      })
+      router.push("/login")
+      return
+    }
 
     // Trigger Animation
     const targetId = "nav-cart-icon"

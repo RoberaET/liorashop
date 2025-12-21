@@ -8,7 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useStore } from "@/lib/store"
+import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { LanguageSwitcher } from "./language-switcher"
@@ -27,7 +34,7 @@ export function Navbar() {
   const router = useRouter()
   const cart = useStore((state) => state.cart)
   const wishlist = useStore((state) => state.wishlist)
-  const user = useStore((state) => state.user)
+  const { user, logout } = useAuth()
   const { t } = useLanguage()
   const mounted = useMounted()
 
@@ -196,12 +203,36 @@ export function Navbar() {
             </Link>
 
             {/* User */}
-            <Link href={currentUser ? "/account" : "/login"}>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-                <span className="sr-only">{t.navbar.account}</span>
-              </Button>
-            </Link>
+            {currentUser ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                    <span className="sr-only">{t.navbar.account}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/account">My Account</Link>
+                  </DropdownMenuItem>
+                  {currentUser.role === 'admin' && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin/dashboard">Admin Dashboard</Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={logout}>
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/login">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                  <span className="sr-only">{t.navbar.account}</span>
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu */}
             <Sheet>

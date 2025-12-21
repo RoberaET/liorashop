@@ -1,85 +1,33 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useStore } from "@/lib/store"
+import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 
 export function LoginForm() {
-  const [isRegistering, setIsRegistering] = useState(false)
-  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const router = useRouter()
-  const setUser = useStore((state) => state.setUser)
-  const registeredUsers = useStore((state) => state.registeredUsers)
-  const registerUser = useStore((state) => state.registerUser)
+  const { login, isLoading } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-    setIsLoading(true)
 
-    // Mock network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // 1. Admin Login
-    if (email === "admin" && password === "t#0Us@nd3840") {
-      setUser({
-        id: "admin-1",
-        name: "Admin User",
-        email: "admin@liorashop.com",
-        role: "admin",
-      })
-      router.push("/admin/dashboard")
-      return
+    try {
+      await login(email, password)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to login")
     }
-
-    if (isRegistering) {
-      // Registration Logic
-      if (registeredUsers.some(u => u.email === email)) {
-        setError("Account with this email already exists.")
-        setIsLoading(false)
-        return
-      }
-
-      const newUser = {
-        id: Math.random().toString(36).substr(2, 9),
-        name,
-        email,
-        role: "user" as const,
-        password
-      }
-      registerUser(newUser)
-      setUser(newUser)
-      router.push("/account")
-
-    } else {
-      // Login Verification Logic
-      const existingUser = registeredUsers.find(u => u.email === email)
-
-      if (!existingUser) {
-        setError("No account found with this email. Please create an account.")
-      } else if (existingUser.password !== password) {
-        setError("Incorrect password.")
-      } else {
-        setUser(existingUser)
-        router.push("/account")
-      }
-    }
-    setIsLoading(false)
   }
 
   return (
@@ -87,21 +35,6 @@ export function LoginForm() {
       {error && (
         <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
           {error}
-        </div>
-      )}
-
-      {isRegistering && (
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="John Doe"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            disabled={isLoading}
-          />
         </div>
       )}
 
@@ -166,25 +99,9 @@ export function LoginForm() {
             Signing in...
           </>
         ) : (
-          isRegistering ? "Create Account" : "Sign In"
+          "Sign In"
         )}
       </Button>
-
-      <div className="text-center text-sm">
-        <span className="text-muted-foreground">
-          {isRegistering ? "Already have an account? " : "Don't have an account? "}
-        </span>
-        <button
-          type="button"
-          className="font-medium hover:underline"
-          onClick={() => {
-            setIsRegistering(!isRegistering)
-            setError("")
-          }}
-        >
-          {isRegistering ? "Sign In" : "Create Account"}
-        </button>
-      </div>
     </form>
   )
 }
