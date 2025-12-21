@@ -101,6 +101,16 @@ export function AddressesContent() {
                                     />
                                 </div>
                                 <div className="space-y-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={newAddress.email}
+                                        onChange={(e) => setNewAddress({ ...newAddress, email: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
                                     <Label htmlFor="street">Street Address</Label>
                                     <Input
                                         id="street"
@@ -187,6 +197,7 @@ export function AddressesContent() {
                                         <p>{address.city}, {address.state} {address.zipCode}</p>
                                         <p>{address.country}</p>
                                         <p className="mt-2">{address.phone}</p>
+                                        <p>{address.email}</p>
                                     </address>
                                 </CardContent>
                             </Card>
