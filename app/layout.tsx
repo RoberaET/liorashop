@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 import { LanguageProvider } from "@/lib/language-context"
 import { AuthProvider } from "@/lib/auth-context"
@@ -70,6 +71,7 @@ export default function RootLayout({
             <FlyAnimationProvider>
               {children}
               <Analytics />
+              <SpeedInsights />
               <Toaster />
             </FlyAnimationProvider>
           </AuthProvider>
