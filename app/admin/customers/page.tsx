@@ -14,7 +14,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, User as UserIcon, Mail, Calendar } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Search, User as UserIcon, Mail, Calendar, Trash2 } from "lucide-react"
 
 export default function AdminCustomersPage() {
     const [users, setUsers] = useState<RegisteredUser[]>([])
@@ -34,6 +35,17 @@ export default function AdminCustomersPage() {
     const formatDate = (date: Date | string) => {
         if (!date) return "N/A"
         return new Date(date).toLocaleDateString()
+    }
+
+    const handleDeleteUser = async (userId: string) => {
+        if (confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+            const success = await db.deleteUser(userId)
+            if (success) {
+                setUsers(users.filter(u => u.id !== userId))
+            } else {
+                alert("Failed to delete user")
+            }
+        }
     }
 
     return (
@@ -70,6 +82,7 @@ export default function AdminCustomersPage() {
                                     <TableHead>Joined</TableHead>
                                     <TableHead>Addresses</TableHead>
                                     <TableHead>Status</TableHead>
+                                    <TableHead>Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -104,11 +117,22 @@ export default function AdminCustomersPage() {
                                                 Active
                                             </Badge>
                                         </TableCell>
+                                        <TableCell>
+                                            {user.role !== 'admin' && (
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    onClick={() => handleDeleteUser(user.id)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            )}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                                 {filteredUsers.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                                             No users found.
                                         </TableCell>
                                     </TableRow>

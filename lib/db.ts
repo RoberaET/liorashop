@@ -107,6 +107,17 @@ export const db = {
         return null
     },
 
+    deleteUser: async (userId: string) => {
+        const db = getDB()
+        const index = db.users.findIndex(u => u.id === userId)
+        if (index !== -1) {
+            db.users.splice(index, 1)
+            saveDB(db)
+            return true
+        }
+        return false
+    },
+
     updatePassword: async (email: string, newPassword: string) => {
         const db = getDB()
         const userIndex = db.users.findIndex((u) => u.email === email)
