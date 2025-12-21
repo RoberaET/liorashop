@@ -10,15 +10,33 @@ interface DBSchema {
     addresses: Record<string, any[]> // userId -> addresses
 }
 
+import { INITIAL_DB } from "./seed-data"
+
 const getDB = (): DBSchema => {
     if (typeof window === "undefined") return { users: [], orders: {}, carts: {}, wishlists: {}, addresses: {} }
     const stored = localStorage.getItem(DB_KEY)
     if (!stored) {
-        const initial: DBSchema = { users: [], orders: {}, carts: {}, wishlists: {}, addresses: {} }
-        localStorage.setItem(DB_KEY, JSON.stringify(initial))
-        return initial
+        localStorage.setItem(DB_KEY, JSON.stringify(INITIAL_DB))
+        return INITIAL_DB
     }
-    return JSON.parse(stored)
+
+    // Check if we need to merge seed users (in case they are missing from local storage)
+    const existingDB = JSON.parse(stored) as DBSchema
+    let modified = false
+
+    INITIAL_DB.users.forEach(seedUser => {
+        if (!existingDB.users.some(u => u.email === seedUser.email)) {
+            existingDB.users.push(seedUser)
+            modified = true
+        }
+    })
+
+    if (modified) {
+        saveDB(existingDB)
+        return existingDB
+    }
+
+    return existingDB
 }
 
 const saveDB = (db: DBSchema) => {
