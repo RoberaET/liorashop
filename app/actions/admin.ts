@@ -162,7 +162,7 @@ export async function getAdminDashboardStatsAction() {
             salesMap.set(dateStr, 0)
         }
 
-        recentOrdersForGraph.forEach(order => {
+        recentOrdersForGraph.forEach((order: any) => {
             const dateStr = order.createdAt.toISOString().split('T')[0]
             if (salesMap.has(dateStr)) {
                 salesMap.set(dateStr, (salesMap.get(dateStr) || 0) + order.total)
