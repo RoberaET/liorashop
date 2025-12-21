@@ -32,7 +32,7 @@ export function HeroSection() {
               delay={150}
               animateBy="words"
               direction="top"
-              className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-[#D2042D] text-balance"
+              className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-[#8B0000] text-balance"
             />
           </div>
           <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8 max-w-xl leading-relaxed">
