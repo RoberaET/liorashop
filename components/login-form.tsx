@@ -13,6 +13,8 @@ import { useStore } from "@/lib/store"
 import Link from "next/link"
 
 export function LoginForm() {
+  const [isRegistering, setIsRegistering] = useState(false)
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -22,16 +24,18 @@ export function LoginForm() {
 
   const router = useRouter()
   const setUser = useStore((state) => state.setUser)
+  const registeredUsers = useStore((state) => state.registeredUsers)
+  const registerUser = useStore((state) => state.registerUser)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     setIsLoading(true)
 
-    // Mock authentication - replace with real auth later
+    // Mock network delay
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Check for admin credentials
+    // 1. Admin Login
     if (email === "admin" && password === "t#0Us@nd3840") {
       setUser({
         id: "admin-1",
@@ -40,19 +44,41 @@ export function LoginForm() {
         role: "admin",
       })
       router.push("/admin/dashboard")
-    } else if (email && password) {
-      // Normal user mockup
-      setUser({
-        id: "1",
-        name: email.split("@")[0],
-        email: email,
-        role: "user",
-      })
-      router.push("/account")
-    } else {
-      setError("Please fill in all fields")
+      return
     }
 
+    if (isRegistering) {
+      // Registration Logic
+      if (registeredUsers.some(u => u.email === email)) {
+        setError("Account with this email already exists.")
+        setIsLoading(false)
+        return
+      }
+
+      const newUser = {
+        id: Math.random().toString(36).substr(2, 9),
+        name,
+        email,
+        role: "user" as const,
+        password
+      }
+      registerUser(newUser)
+      setUser(newUser)
+      router.push("/account")
+
+    } else {
+      // Login Verification Logic
+      const existingUser = registeredUsers.find(u => u.email === email)
+
+      if (!existingUser) {
+        setError("No account found with this email. Please create an account.")
+      } else if (existingUser.password !== password) {
+        setError("Incorrect password.")
+      } else {
+        setUser(existingUser)
+        router.push("/account")
+      }
+    }
     setIsLoading(false)
   }
 
@@ -64,11 +90,26 @@ export function LoginForm() {
         </div>
       )}
 
+      {isRegistering && (
+        <div className="space-y-2">
+          <Label htmlFor="name">Full Name</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="John Doe"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            disabled={isLoading}
+          />
+        </div>
+      )}
+
       <div className="space-y-2">
         <Label htmlFor="email">Email or Username</Label>
         <Input
           id="email"
-          type="text"
+          type="email"
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -125,9 +166,25 @@ export function LoginForm() {
             Signing in...
           </>
         ) : (
-          "Sign In"
+          isRegistering ? "Create Account" : "Sign In"
         )}
       </Button>
+
+      <div className="text-center text-sm">
+        <span className="text-muted-foreground">
+          {isRegistering ? "Already have an account? " : "Don't have an account? "}
+        </span>
+        <button
+          type="button"
+          className="font-medium hover:underline"
+          onClick={() => {
+            setIsRegistering(!isRegistering)
+            setError("")
+          }}
+        >
+          {isRegistering ? "Sign In" : "Create Account"}
+        </button>
+      </div>
     </form>
   )
 }

@@ -2,7 +2,7 @@
 
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { CartItem, WishlistItem, Product, User, Address, Order } from "./types"
+import type { CartItem, WishlistItem, Product, User, Address, Order, RegisteredUser } from "./types"
 
 interface StoreState {
   // Cart
@@ -23,6 +23,8 @@ interface StoreState {
   // User
   user: User | null
   setUser: (user: User | null) => void
+  registeredUsers: RegisteredUser[]
+  registerUser: (user: RegisteredUser) => void
 
   // Checkout
   shippingAddress: Address | null
@@ -100,6 +102,8 @@ export const useStore = create<StoreState>()(
       // User
       user: null,
       setUser: (user) => set({ user }),
+      registeredUsers: [],
+      registerUser: (user) => set((state) => ({ registeredUsers: [...state.registeredUsers, user] })),
 
       // Checkout
       shippingAddress: null,
