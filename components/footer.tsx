@@ -89,8 +89,8 @@ export function Footer() {
               <h3 className="font-serif text-lg font-bold mb-4">{t.footer.contactUs}</h3>
               <ul className="space-y-2 text-sm text-neutral-400">
                 <li><Link href="/faq" className="hover:text-white transition-colors">{t.footer.faqs}</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">info@liorashop.com</Link></li>
-                <li><a href="tel:+251911234567" className="hover:text-white transition-colors">+251 911 234 567</a></li>
+                <li><Link href="mailto:liorashop.et@gmail.com" className="hover:text-white transition-colors">liorashop.et@gmail.com</Link></li>
+                <li><a href="tel:+251976144230" className="hover:text-white transition-colors">+251 976 144 230</a></li>
                 <li>Addis Ababa, Ethiopia</li>
               </ul>
             </div>

@@ -89,13 +89,13 @@ export const translations = {
         faq: {
             title: "Frequently Asked Questions",
             q1: "How long does shipping take?",
-            a1: "Shipping usually takes 3-5 business days for local deliveries in Addis Ababa and 5-7 days for regional deliveries.",
+            a1: "Local delivery in Addis Ababa takes 1 day. Express shipping is available and delivered within 1-2 hours. Regional deliveries take 5-7 days.",
             q2: "What is your return policy?",
-            a2: "We offer a 7-day return policy for unused items in their original packaging. Please keep your receipt.",
+            a2: "We offer a 1-day return policy for unused items in their original packaging. Please keep your receipt.",
             q3: "Do you offer international shipping?",
             a3: "Currently, we only ship within Ethiopia. We are planning to expand to international markets soon.",
             q4: "How can I track my order?",
-            a4: "Once your order is shipped, you will receive an SMS and email with a tracking number.",
+            a4: "We will call you to update you on your order status.",
         },
         privacy: {
             title: "Privacy Policy",
@@ -347,13 +347,13 @@ export const translations = {
         faq: {
             title: "ተደጋጋሚ ጥያቄዎች",
             q1: "ማድረስ ምን ያህል ጊዜ ይወስዳል?",
-            a1: "ማድረስ በተለምዶ በአዲስ አበባ ውስጥ ለሚደረጉ አቅርቦቶች ከ 3-5 የስራ ቀናት እና ለክልሎች ከ 5-7 ቀናት ይወስዳል።",
+            a1: "በአዲስ አበባ ውስጥ ማድረስ 1 ቀን ይወስዳል። ፈጣን ማጓጓዣ በ1-2 ሰዓት ውስጥ ይደርሳል። ለክልሎች ከ 5-7 ቀናት ይወስዳል።",
             q2: "የመመለሻ ፖሊሲዎ ምንድነው?",
-            a2: "ያልተጠቀሙባቸውን እቃዎች በዋናው ማሸጊያቸው ለመመለስ የ 7 ቀናት ፖሊሲ አለን። እባክዎ ደረሰኝዎን ይያዙ።",
+            a2: "ያልተጠቀሙባቸውን እቃዎች በዋናው ማሸጊያቸው ለመመለስ የ 1 ቀን ፖሊሲ አለን። እባክዎ ደረሰኝዎን ይያዙ።",
             q3: "ዓለም አቀፍ ማጓጓዣ ይሰጣሉ?",
             a3: "በአሁኑ ጊዜ በኢትዮጵያ ውስጥ ብቻ ነው የምናቀርበው። በቅርቡ ወደ ዓለም አቀፍ ገበያዎች ለመስፋፋት እቅድ አለን።",
             q4: "ትዕዛዜን እንዴት መከታተል እችላለሁ?",
-            a4: "ትዕዛዝዎ ከተላከ በኋላ፣ የመከታተያ ቁጥር በኤስኤምኤስ እና በኢሜል ይደርስዎታል።",
+            a4: "ስለ ትዕዛዝዎ ሁኔታ መረጃ ለመስጠት እንደውልልዎታለን።",
         },
         privacy: {
             title: "የ ግል የሆነ",
