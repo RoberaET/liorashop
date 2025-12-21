@@ -27,10 +27,7 @@ import dynamic from "next/dynamic"
 
 // Dynamically import components to avoid hydration mismatch with Radix UI IDs
 const LanguageSwitcher = dynamic(() => import("./language-switcher").then(mod => mod.LanguageSwitcher), { ssr: false })
-// MobileMenu is no longer needed in layout as handled by PillNav or rightContent, but we kept logic.
-// However, PillNav has its own mobile menu. Let's see. 
-// We should import PillNav.
-import PillNav from "@/components/pill-nav"
+const MobileMenu = dynamic(() => import("./mobile-menu").then(mod => mod.MobileMenu), { ssr: false })
 
 export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false)
@@ -96,18 +93,35 @@ export function Navbar() {
   }
 
   return (
-    <header>
-      <PillNav
-        logo="/logo.svg"
-        logoAlt="LIORA"
-        items={navLinks}
-        rightContent={
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-2xl font-serif font-bold tracking-tight">LIORA SHOP</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Actions */}
           <div className="flex items-center gap-2">
+
             <LanguageSwitcher />
 
             {/* Search */}
             {searchOpen ? (
-              <form onSubmit={handleSearch} className="flex items-center gap-2 relative z-50" ref={searchRef}>
+              <form onSubmit={handleSearch} className="flex items-center gap-2 relative" ref={searchRef}>
                 <div className="relative">
                   <Input
                     type="search"
@@ -119,7 +133,7 @@ export function Navbar() {
                   />
                   {/* Search Results Dropdown */}
                   {searchQuery && searchResults.length > 0 && (
-                    <div className="absolute top-full left-0 w-full mt-2 bg-background border border-border rounded-md shadow-lg z-[1001] max-h-80 overflow-y-auto">
+                    <div className="absolute top-full left-0 w-full mt-2 bg-background border border-border rounded-md shadow-lg z-50 max-h-80 overflow-y-auto">
                       <div className="p-2 space-y-1">
                         {searchResults.map((product) => (
                           <Link
@@ -146,7 +160,7 @@ export function Navbar() {
                     </div>
                   )}
                   {searchQuery && searchResults.length === 0 && (
-                    <div className="absolute top-full left-0 w-full mt-2 bg-background border border-border rounded-md shadow-lg z-[1001] p-4 text-center text-sm text-muted-foreground">
+                    <div className="absolute top-full left-0 w-full mt-2 bg-background border border-border rounded-md shadow-lg z-50 p-4 text-center text-sm text-muted-foreground">
                       No results found
                     </div>
                   )}
@@ -200,7 +214,7 @@ export function Navbar() {
                     <span className="sr-only">{t.navbar.account}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="z-[1002]">
+                <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
                     <Link href="/account">My Account</Link>
                   </DropdownMenuItem>
@@ -222,9 +236,12 @@ export function Navbar() {
                 </Button>
               </Link>
             )}
+
+            {/* Mobile Menu */}
+            <MobileMenu />
           </div>
-        }
-      />
+        </div>
+      </div>
     </header>
   )
 }
