@@ -51,7 +51,7 @@ export default function AdminLayout({
             {/* Desktop Sidebar */}
             <AdminSidebar className="hidden md:flex" />
 
-            <main className="flex-1 overflow-y-auto bg-slate-50/50 p-4 md:p-8">
+            <main className="flex-1 overflow-y-auto bg-white text-slate-900 p-4 md:p-8">
                 {children}
             </main>
         </div>
