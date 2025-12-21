@@ -6,10 +6,20 @@ import { formatPrice } from "@/lib/utils"
 import { Package, ShoppingCart, TrendingUp } from "lucide-react"
 import { useMounted } from "@/hooks/use-mounted"
 import { products } from "@/lib/data"
+import { db } from "@/lib/db"
+import { Order } from "@/lib/types"
 
 export default function AdminDashboard() {
-    const orders = useStore((state) => state.orders)
+    // const orders = useStore((state) => state.orders) // Removed
     const mounted = useMounted()
+
+    // We need to fetch orders synchronously or assume mounted? 
+    // Since useMounted returns bool, we can just fetch:
+
+    // Actually, db actions are synchronous in this mock.
+    // If we want it to be safe:
+
+    const orders = mounted ? db.getAllOrders() : []
 
     if (!mounted) return null
 

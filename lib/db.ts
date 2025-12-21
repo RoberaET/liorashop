@@ -155,5 +155,14 @@ export const db = {
     getAllUsers: () => {
         const db = getDB()
         return db.users
+    },
+
+    getAllOrders: () => {
+        const db = getDB()
+        const allOrders: (Order & { userId: string })[] = []
+        for (const [userId, userOrders] of Object.entries(db.orders)) {
+            allOrders.push(...userOrders.map(o => ({ ...o, userId })))
+        }
+        return allOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     }
 }
