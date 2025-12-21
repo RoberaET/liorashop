@@ -27,6 +27,10 @@ export function OrdersContent() {
     useEffect(() => {
         if (!isLoading && !user) {
             router.push("/login")
+        } else if (user) {
+            // Force refresh orders from DB to ensure persistence is visible
+            const userOrders = db.getOrders(user.id)
+            useStore.getState().setOrders(userOrders)
         }
     }, [user, isLoading, router])
 

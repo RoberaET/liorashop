@@ -37,7 +37,7 @@ export function CheckoutContent() {
   const clearCart = useStore((state) => state.clearCart)
   const getCartTotal = useStore((state) => state.getCartTotal)
   const setShippingAddress = useStore((state) => state.setShippingAddress)
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [step, setStep] = useState<"shipping" | "payment">("shipping")
@@ -440,7 +440,7 @@ export function CheckoutContent() {
                       >
                         Back
                       </Button>
-                      <Button type="submit" size="lg" className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90" disabled={isProcessing}>
+                      <Button type="submit" size="lg" className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90" disabled={isProcessing || isLoading}>
                         {isProcessing ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
