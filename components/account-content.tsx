@@ -9,15 +9,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/auth-context"
 import { useStore } from "@/lib/store"
+import { db } from "@/lib/db"
+import { formatPrice } from "@/lib/utils"
+import { Order } from "@/lib/types"
+import { useState } from "react"
+import { Badge } from "@/components/ui/badge"
 
 export function AccountContent() {
   const router = useRouter()
   const { user, logout, isLoading } = useAuth()
+  const [recentOrders, setRecentOrders] = useState<Order[]>([])
   const wishlist = useStore((state) => state.wishlist)
 
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/login")
+    } else if (user) {
+      // Fetch recent orders
+      const orders = db.getOrders(user.id)
+      setRecentOrders(orders.slice(0, 3)) // Get top 3
     }
   }, [user, isLoading, router])
 
@@ -109,13 +119,40 @@ export function AccountContent() {
             <CardDescription>Your latest orders and activity</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-8">
-              <User className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">No recent orders</p>
-              <Button asChild variant="outline" className="mt-4 bg-transparent">
-                <Link href="/">Start Shopping</Link>
-              </Button>
-            </div>
+            {recentOrders.length > 0 ? (
+              <div className="space-y-4">
+                {recentOrders.map((order) => (
+                  <div key={order.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                    <div>
+                      <p className="font-medium">Order #{order.id}</p>
+                      <p className="text-sm text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Badge variant="outline" className={
+                        order.status === "delivered" ? "bg-green-100 text-green-800" :
+                          order.status === "shipped" ? "bg-blue-100 text-blue-800" :
+                            order.status === "cancelled" ? "bg-red-100 text-red-800" :
+                              "bg-yellow-100 text-yellow-800"
+                      }>
+                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      </Badge>
+                      <p className="font-semibold">{formatPrice(order.total)}</p>
+                    </div>
+                  </div>
+                ))}
+                <Button variant="link" asChild className="w-full mt-2">
+                  <Link href="/account/orders">View All Orders</Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <User className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No recent orders</p>
+                <Button asChild variant="outline" className="mt-4 bg-transparent">
+                  <Link href="/">Start Shopping</Link>
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
