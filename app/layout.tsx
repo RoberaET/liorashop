@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/lib/language-context"
 import { AuthProvider } from "@/lib/auth-context"
 import { FlyAnimationProvider } from "@/components/fly-animation-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -66,16 +67,23 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
-        <LanguageProvider>
-          <AuthProvider>
-            <FlyAnimationProvider>
-              {children}
-              <Analytics />
-              <SpeedInsights />
-              <Toaster />
-            </FlyAnimationProvider>
-          </AuthProvider>
-        </LanguageProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LanguageProvider>
+            <AuthProvider>
+              <FlyAnimationProvider>
+                {children}
+                <Analytics />
+                <SpeedInsights />
+                <Toaster />
+              </FlyAnimationProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

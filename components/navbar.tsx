@@ -29,6 +29,7 @@ import dynamic from "next/dynamic"
 // Dynamically import components to avoid hydration mismatch with Radix UI IDs
 const LanguageSwitcher = dynamic(() => import("./language-switcher").then(mod => mod.LanguageSwitcher), { ssr: false })
 const MobileMenu = dynamic(() => import("./mobile-menu").then(mod => mod.MobileMenu), { ssr: false })
+const ModeToggle = dynamic(() => import("./mode-toggle").then(mod => mod.ModeToggle), { ssr: false })
 
 export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false)
@@ -119,6 +120,7 @@ export function Navbar() {
           <div className="flex items-center gap-2">
 
             <LanguageSwitcher />
+            <ModeToggle />
 
             {/* Search */}
             {searchOpen ? (
