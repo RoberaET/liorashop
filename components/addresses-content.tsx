@@ -25,6 +25,7 @@ export function AddressesContent() {
 
     const [newAddress, setNewAddress] = useState<Address>({
         fullName: "",
+        email: "",
         street: "",
         city: "",
         state: "",
@@ -52,6 +53,7 @@ export function AddressesContent() {
         addAddress(newAddress)
         setNewAddress({
             fullName: "",
+            email: "",
             street: "",
             city: "",
             state: "",

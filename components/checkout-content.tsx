@@ -92,7 +92,7 @@ export function CheckoutContent() {
   }
 
   const subtotal = getCartTotal()
-  const shippingCost = shippingMethod === "express" ? 300 : subtotal > 10000 ? 0 : 1000
+  const shippingCost = shippingMethod === "express" ? 300 : 0
   const discountAmount = appliedDiscount ? subtotal * appliedDiscount : 0
   const total = subtotal + shippingCost - discountAmount
 
@@ -328,7 +328,7 @@ export function CheckoutContent() {
                                 <p className="font-medium">Standard Shipping</p>
                                 <p className="text-sm text-muted-foreground">1 - 2 days</p>
                               </div>
-                              <span className="font-medium">{subtotal > 10000 ? "Free" : "ETB 1,000.00"}</span>
+                              <span className="font-medium">Free</span>
                             </div>
                           </Label>
                         </div>
