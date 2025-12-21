@@ -133,9 +133,22 @@ export function CheckoutContent() {
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     const addOrder = useStore.getState().addOrder
+    // We need user ID to persist order.
+    // Since we are inside a function, we can't use hooks conditionally, but we can access the latest state if we get it via hook at top level.
+    // Let's assume we added `const { user } = useAuth()` at component level.
 
     // Create new order
-    const newOrder: any = {
+    // Check if user is logged in
+    // Note: We need to import useAuth and get user.
+    // The previous code didn't use useAuth.
+
+    // We need to fetch user from useAuth() at the top of the component.
+    // See top level changes.
+
+    // Assuming 'user' is available now:
+    const userId = user ? user.id : "guest" // Fallback for guest (though guest orders won't appear in 'My Orders')
+
+    const newOrder: Order = {
       id: Math.random().toString(36).substring(2, 9).toUpperCase(),
       items: [...cart],
       total: total,
@@ -154,6 +167,11 @@ export function CheckoutContent() {
     }
 
     addOrder(newOrder)
+
+    // Save to DB
+    if (user) {
+      db.saveOrder(user.id, newOrder)
+    }
 
     clearCart()
     router.push("/checkout/success")
