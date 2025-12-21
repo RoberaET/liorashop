@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     "name": product.name,
     "image": product.images || [product.image],
     "description": product.description,
-    "sku": product.sku || `LX-${product.id}`,
+    "sku": `LX-${product.id}`,
     "brand": {
       "@type": "Brand",
       "name": "Liora Shop"

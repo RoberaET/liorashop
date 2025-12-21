@@ -4,9 +4,9 @@ export interface Product {
   name: string
   description: string
   price: number
-  originalPrice?: number
+  originalPrice?: number | null
   image: string
-  category: "clothes" | "shoes" | "cosmetics" | "perfumes"
+  category: string
   rating: number
   reviews: number
   inStock: boolean

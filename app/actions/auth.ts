@@ -32,9 +32,19 @@ export async function loginAction(email: string, password: string) {
         // Next.js Server Actions can return complex objects but Dates are sometimes tricky.
         // Let's rely on basic serialization.
 
-        // Remove password from response
-        const { password: _, ...userWithoutPassword } = user
-        return { user: userWithoutPassword }
+        // Remove password from response and structure settings
+        const { password: _, currency, notifications, marketingEmails, ...userWithoutPasswordAndSettings } = user
+
+        const userWithSettings = {
+            ...userWithoutPasswordAndSettings,
+            settings: {
+                currency,
+                notifications,
+                marketingEmails
+            }
+        }
+
+        return { user: userWithSettings }
 
     } catch (error) {
         console.error("Login error:", error)
@@ -71,8 +81,18 @@ export async function registerAction(data: Pick<RegisteredUser, "name" | "email"
             }
         })
 
-        const { password: _, ...userWithoutPassword } = user
-        return { user: userWithoutPassword }
+        const { password: _, currency, notifications, marketingEmails, ...userWithoutPasswordAndSettings } = user
+
+        const userWithSettings = {
+            ...userWithoutPasswordAndSettings,
+            settings: {
+                currency,
+                notifications,
+                marketingEmails
+            }
+        }
+
+        return { user: userWithSettings }
 
     } catch (error) {
         console.error("Register error:", error)
