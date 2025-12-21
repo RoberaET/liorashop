@@ -164,10 +164,8 @@ export default function AdminOrdersPage() {
                                                 className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                                 onClick={() => {
                                                     if (window.confirm("Are you sure you want to delete this order?")) {
-                                                        // removeOrder(order.id) // Disabled as it only affects local store
-                                                        // Ideally fetch db.removeOrder
-                                                        // For now let's just support status updates
-                                                        alert("Delete not persistence-connected yet. Use Cancelled status.")
+                                                        db.deleteOrder(order.userId, order.id)
+                                                        refreshOrders()
                                                     }
                                                 }}
                                             >

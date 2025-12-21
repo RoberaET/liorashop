@@ -114,6 +114,14 @@ export const db = {
         }
     },
 
+    deleteOrder: (userId: string, orderId: string) => {
+        const db = getDB()
+        if (db.orders[userId]) {
+            db.orders[userId] = db.orders[userId].filter(o => o.id !== orderId)
+            saveDB(db)
+        }
+    },
+
     // Cart Methods
     getCart: (userId: string) => {
         const db = getDB()
