@@ -104,13 +104,13 @@ export default function AdminOrdersPage() {
                 <p className="text-slate-600">Manage and update customer orders.</p>
             </div>
 
-            <div className="border border-slate-200 rounded-lg bg-white shadow-sm overflow-hidden">
+            <div className="border border-slate-200 rounded-lg bg-white shadow-sm overflow-x-auto">
                 <Table>
                     <TableHeader className="bg-slate-50">
                         <TableRow className="border-slate-200 hover:bg-slate-50">
-                            <TableHead className="text-slate-900 font-extrabold">Order ID</TableHead>
+                            <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Order ID</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Customer</TableHead>
-                            <TableHead className="text-slate-900 font-extrabold">Date</TableHead>
+                            <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Date</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Total</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Status</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Actions</TableHead>
@@ -132,14 +132,14 @@ export default function AdminOrdersPage() {
                         ) : (
                             orders.map((order) => (
                                 <TableRow key={order.id} className="border-slate-100 hover:bg-slate-50 transition-colors">
-                                    <TableCell className="font-mono text-orange-700 font-bold">{order.id}</TableCell>
+                                    <TableCell className="hidden md:table-cell font-mono text-orange-700 font-bold">{order.id}</TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
                                             <span className="font-bold text-purple-800">{order.shippingAddress.fullName}</span>
                                             <span className="text-xs text-slate-500">{order.shippingAddress.email}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-amber-800 font-semibold">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                                    <TableCell className="hidden md:table-cell text-amber-800 font-semibold">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
                                     <TableCell className="text-emerald-700 font-extrabold">{formatPrice(order.total)}</TableCell>
                                     <TableCell>
                                         <Badge className={getStatusColor(order.status)}>

@@ -25,15 +25,15 @@ export default async function AdminProductsPage() {
                 <p className="text-slate-600">Manage your product catalog.</p>
             </div>
 
-            <div className="border border-slate-200 rounded-lg bg-white shadow-sm overflow-hidden">
+            <div className="border border-slate-200 rounded-lg bg-white shadow-sm overflow-x-auto">
                 <Table>
                     <TableHeader className="bg-slate-50">
                         <TableRow className="border-slate-200 hover:bg-slate-50">
                             <TableHead className="w-[80px] text-slate-900 font-extrabold">Image</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Name</TableHead>
-                            <TableHead className="text-slate-900 font-extrabold">Category</TableHead>
+                            <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Category</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Price</TableHead>
-                            <TableHead className="text-slate-900 font-extrabold">Stock</TableHead>
+                            <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Stock</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Status</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -53,9 +53,9 @@ export default async function AdminProductsPage() {
                                     </div>
                                 </TableCell>
                                 <TableCell className="font-semibold text-purple-800">{product.name}</TableCell>
-                                <TableCell className="capitalize text-amber-900 font-medium">{product.category}</TableCell>
+                                <TableCell className="hidden md:table-cell capitalize text-amber-900 font-medium">{product.category}</TableCell>
                                 <TableCell className="text-green-600 font-bold">{formatPrice(product.price)}</TableCell>
-                                <TableCell>
+                                <TableCell className="hidden md:table-cell">
                                     <span className={product.stock === 0 ? "text-red-700 font-bold" : "text-red-900 font-medium"}>
                                         {product.stock}
                                     </span>

@@ -97,7 +97,7 @@ export default function AdminCustomersPage() {
                 </div>
             )}
 
-            <Card className="border-slate-200 bg-white shadow-sm overflow-hidden">
+            <Card className="border-slate-200 bg-white shadow-sm overflow-x-auto">
                 <CardHeader className="bg-white border-b border-slate-100">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-slate-900">All Users ({users.length})</CardTitle>
@@ -117,9 +117,9 @@ export default function AdminCustomersPage() {
                         <TableHeader className="bg-slate-50">
                             <TableRow className="border-slate-200 hover:bg-slate-50">
                                 <TableHead className="text-slate-900 font-extrabold">User</TableHead>
-                                <TableHead className="text-slate-900 font-extrabold">Role</TableHead>
-                                <TableHead className="text-slate-900 font-extrabold">Joined</TableHead>
-                                <TableHead className="text-slate-900 font-extrabold">Addresses</TableHead>
+                                <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Role</TableHead>
+                                <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Joined</TableHead>
+                                <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Addresses</TableHead>
                                 <TableHead className="text-slate-900 font-extrabold">Status</TableHead>
                                 <TableHead className="text-slate-900 font-extrabold">Actions</TableHead>
                             </TableRow>
@@ -137,18 +137,18 @@ export default function AdminCustomersPage() {
                                             </span>
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="hidden md:table-cell">
                                         <Badge variant={user.role === 'admin' ? "default" : "secondary"} className={user.role === 'admin' ? "bg-purple-900 hover:bg-purple-800" : "bg-blue-100 text-blue-800 hover:bg-blue-200"}>
                                             {user.role}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-amber-800 font-semibold text-sm">
+                                    <TableCell className="hidden md:table-cell text-amber-800 font-semibold text-sm">
                                         <div className="flex items-center gap-2">
                                             <Calendar className="h-3 w-3" />
                                             {formatDate(user.createdAt)}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-orange-700 font-bold">
+                                    <TableCell className="hidden md:table-cell text-orange-700 font-bold">
                                         {user.addresses?.length || 0} Saved
                                     </TableCell>
                                     <TableCell>
