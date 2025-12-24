@@ -61,3 +61,34 @@ Please check the Admin Panel for more details.
         return { success: false, error: "Network error" }
     }
 }
+
+export async function sendCancellationNotification(order: Order) {
+    if (!order) return { success: false, error: "No order data" }
+
+    try {
+        const message = `
+⚠️ **ORDER CANCELLED** ⚠️
+
+🆔 **Order ID:** #${order.id.slice(0, 8)}
+👤 **Customer:** ${order.shippingAddress.fullName}
+💰 **Refund Amount:** ${order.total} ETB
+
+❌ The customer has cancelled this order.
+`
+
+        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: "Markdown",
+            }),
+        })
+
+        return { success: true }
+    } catch (error) {
+        console.error("Failed to send cancellation alert:", error)
+        return { success: false }
+    }
+}

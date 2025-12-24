@@ -30,7 +30,8 @@ export function Snowfall() {
         }
 
         const createSnowflakes = () => {
-            const count = Math.floor((window.innerWidth * window.innerHeight) / 10000) // Density based on screen size
+            // Reduced density for better mobile performance (was 10000)
+            const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 100)
             const flakes: Snowflake[] = []
             for (let i = 0; i < count; i++) {
                 flakes.push({
@@ -92,7 +93,7 @@ export function Snowfall() {
     return (
         <canvas
             ref={canvasRef}
-            className="fixed inset-0 pointer-events-none z-[9999]"
+            className="fixed inset-0 pointer-events-none z-50 will-change-transform" // Reduced z-index, optimized layer
             aria-hidden="true"
         />
     )

@@ -15,6 +15,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 // import { db } from "@/lib/db" 
 import { getUserOrdersAction, cancelOrderAction } from "@/app/actions/order"
+import { sendCancellationNotification } from "@/app/actions/telegram"
 
 export function OrdersContent() {
     const router = useRouter()
@@ -55,6 +56,11 @@ export function OrdersContent() {
     const handleCancelOrder = async (orderId: string) => {
         if (!user) return
 
+        if (!confirm("Are you sure you want to cancel this order?")) return
+
+        // Optimistically find order for notification
+        const orderToCancel = orders.find(o => o.id === orderId)
+
         const result = await cancelOrderAction(orderId, user.id)
         if (result.error) {
             toast({
@@ -63,6 +69,11 @@ export function OrdersContent() {
                 variant: "destructive"
             })
             return
+        }
+
+        // Send Telegram Alert
+        if (orderToCancel) {
+            await sendCancellationNotification(orderToCancel)
         }
 
         updateOrderStatus(orderId, "cancelled")
