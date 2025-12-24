@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import { ProductFilters } from "@/components/product-filters"
 import { ProductCard } from "@/components/product-card"
 import { Product, Category } from "@/lib/types"
+import { db } from "@/lib/db"
 
 import { useLanguage } from "@/lib/language-context"
 
@@ -15,15 +16,26 @@ interface CategoryPageContentProps {
 
 export function CategoryPageContent({ initialProducts, category, slug }: CategoryPageContentProps) {
     const { t } = useLanguage()
+
+    // Use state to hold products, initially from props but updated from DB
+    const [products, setProducts] = useState<Product[]>(initialProducts)
+
+    useEffect(() => {
+        // Load latest products from DB ensuring we get Admin added ones
+        const allProducts = db.getAllProducts()
+        const categoryProducts = allProducts.filter(p => p.category.toLowerCase() === slug.toLowerCase())
+        setProducts(categoryProducts)
+    }, [slug])
+
     // 1. Calculate dynamic price range
     const { minPrice, maxPrice } = useMemo(() => {
-        if (initialProducts.length === 0) return { minPrice: 0, maxPrice: 1000 }
-        const prices = initialProducts.map((p) => p.price)
+        if (products.length === 0) return { minPrice: 0, maxPrice: 1000 }
+        const prices = products.map((p) => p.price)
         return {
             minPrice: Math.min(...prices),
             maxPrice: Math.max(...prices),
         }
-    }, [initialProducts])
+    }, [products])
 
     // 2. State for filters
     const [priceRange, setPriceRange] = useState([minPrice, maxPrice])
@@ -35,11 +47,11 @@ export function CategoryPageContent({ initialProducts, category, slug }: Categor
 
     // 3. Filter products
     const filteredProducts = useMemo(() => {
-        return initialProducts.filter((product) => {
+        return products.filter((product) => {
             const price = product.price
             return price >= priceRange[0] && price <= priceRange[1]
         })
-    }, [initialProducts, priceRange])
+    }, [products, priceRange])
 
     // Helper for header styling (preserving your custom logic)
     const getHeaderColor = (slug: string) => {

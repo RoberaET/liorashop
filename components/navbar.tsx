@@ -25,6 +25,7 @@ import { useRef, useEffect } from "react"
 import type { Product } from "@/lib/types"
 import Image from "next/image"
 import dynamic from "next/dynamic"
+import { db } from "@/lib/db"
 
 // Dynamically import components to avoid hydration mismatch with Radix UI IDs
 const LanguageSwitcher = dynamic(() => import("./language-switcher").then(mod => mod.LanguageSwitcher), { ssr: false })
@@ -82,7 +83,13 @@ export function Navbar() {
     const query = e.target.value
     setSearchQuery(query)
     if (query.trim()) {
-      setSearchResults(searchProducts(query))
+      // Search from dynamic DB instead of static file
+      const allProducts = db.getAllProducts();
+      const filtered = allProducts.filter(p =>
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        p.category.toLowerCase().includes(query.toLowerCase())
+      );
+      setSearchResults(filtered)
     } else {
       setSearchResults([])
     }

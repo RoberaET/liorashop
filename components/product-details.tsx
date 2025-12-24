@@ -11,23 +11,64 @@ import { formatPrice } from "@/lib/utils"
 import { ProductCard } from "@/components/product-card"
 import Link from "next/link"
 
+import { useState, useEffect } from "react"
+import { db } from "@/lib/db"
+// ... imports
+
 interface ProductDetailsProps {
-    product: Product
-    relatedProducts: Product[]
-    discount: number
+    productId: string // Added ID to fetch if product is missing
+    product?: Product | null
+    relatedProducts?: Product[]
+    discount?: number
 }
 
-export function ProductDetails({ product, relatedProducts, discount }: ProductDetailsProps) {
+export function ProductDetails({ productId, product: initialProduct, relatedProducts: initialRelated, discount: initialDiscount }: ProductDetailsProps) {
     const { t } = useLanguage()
+
+    // State to hold potentially fetched product
+    const [product, setProduct] = useState<Product | null | undefined>(initialProduct)
+    const [related, setRelated] = useState<Product[]>(initialRelated || [])
+    const [isLoading, setIsLoading] = useState(!initialProduct)
+
+    useEffect(() => {
+        // If we already have the product from server, just ensure we have related products
+        // Actually, we should preferably refresh from DB to get latest stock/price even if server sent it
+        // But for now, if missing (Client-only product), we MUST fetch.
+
+        if (!product) {
+            const found = db.getProduct(productId)
+            setProduct(found)
+
+            if (found) {
+                const all = db.getAllProducts()
+                const rel = all.filter(p => p.category === found.category && p.id !== found.id).slice(0, 4)
+                setRelated(rel)
+            }
+            setIsLoading(false)
+        }
+    }, [productId, product])
+
+    // Update discount if we fetched a new product
+    const discount = product?.originalPrice
+        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+        : (initialDiscount || 0)
+
+    if (isLoading) {
+        return <div className="min-h-[50vh] flex items-center justify-center text-muted-foreground">Loading product parameters...</div>
+    }
+
+    if (!product) {
+        return (
+            <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4">
+                <h2 className="text-2xl font-bold">Product Not Found</h2>
+                <p className="text-muted-foreground">The product you are looking for does not exist.</p>
+                <Link href="/" className="text-primary hover:underline">Return Home</Link>
+            </div>
+        )
+    }
 
     return (
         <>
-            {/* Breadcrumb - Included here or parent? Parent has it. 
-          Actually, let's keep breadcrumb in client component for consistency if we want "Home" to be translated.
-          But parent had breadcrumb logic. 
-          I'll extract breadcrumb here or just render it. 
-          Let's render it here to translate "Home".
-      */}
             <div className="container mx-auto px-4 py-4">
                 <nav className="text-sm text-muted-foreground">
                     <Link href="/" className="hover:text-foreground transition-colors">
@@ -149,7 +190,6 @@ export function ProductDetails({ product, relatedProducts, discount }: ProductDe
                         <div className="prose max-w-none">
                             <p className="text-muted-foreground leading-relaxed">{product.description}</p>
                             <p className="text-muted-foreground leading-relaxed mt-4">
-                                {/* This text was hardcoded. I will use the description again or leave empty if redundant */}
                                 Crafted with meticulous attention to detail, this product represents the perfect balance of quality,
                                 style, and functionality. Each piece is carefully inspected to ensure it meets our high standards
                                 before reaching your hands.
@@ -190,12 +230,12 @@ export function ProductDetails({ product, relatedProducts, discount }: ProductDe
             </section>
 
             {/* Related Products */}
-            {relatedProducts.length > 0 && (
+            {related.length > 0 && (
                 <section className="bg-muted/30 py-12 md:py-16">
                     <div className="container mx-auto px-4">
                         <h2 className="text-2xl md:text-3xl font-serif font-bold mb-8">{t.product.related}</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {relatedProducts.map((relatedProduct) => (
+                            {related.map((relatedProduct) => (
                                 <ProductCard key={relatedProduct.id} product={relatedProduct} />
                             ))}
                         </div>

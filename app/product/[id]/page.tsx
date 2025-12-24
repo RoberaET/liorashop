@@ -9,12 +9,19 @@ interface ProductPageProps {
   params: Promise<{ id: string }>
 }
 
+// ... imports
+
 export async function generateMetadata({ params }: ProductPageProps) {
   const { id } = await params
-  const { product } = await getProductByIdAction(id)
+  const { product } = await getProductByIdAction(id).catch(() => ({ product: null }))
 
   if (!product) {
-    return { title: "Product Not Found" }
+    // If server fetch fails, we can't generate specific metadata easily.
+    // We'll return generic metadata and let the client render the product details.
+    return {
+      title: "Product Details - Liora Shop",
+      description: "View product details."
+    }
   }
 
   return {
@@ -28,21 +35,23 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params
-  const { product } = await getProductByIdAction(id)
 
-  if (!product) {
-    notFound()
+  // Attempt to fetch from server, but don't fail if not found (might be client-only product)
+  const { product } = await getProductByIdAction(id).catch(() => ({ product: null }))
+
+  let relatedProducts: any[] = []
+  if (product) {
+    const { products: categoryProducts } = await getProductsByCategoryAction(product.category).catch(() => ({ products: [] }))
+    relatedProducts = categoryProducts?.filter((p: any) => p.id !== product.id).slice(0, 4) || []
   }
 
-  const { products: categoryProducts } = await getProductsByCategoryAction(product.category)
-  const relatedProducts = categoryProducts?.filter((p: any) => p.id !== product.id).slice(0, 4) || []
-
-  const discount = product.originalPrice
+  // Calculate discount only if product exists
+  const discount = product?.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0
 
-  // JSON-LD for Product
-  const jsonLd = {
+  // Only render JSON-LD if product is found on server
+  const jsonLd = product ? {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": product.name,
@@ -61,17 +70,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
       "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       "itemCondition": "https://schema.org/NewCondition"
     }
-  }
+  } : null
 
   return (
     <div className="min-h-screen flex flex-col">
-      <script
+      {jsonLd && <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      />}
       <Navbar />
       <main className="flex-1">
         <ProductDetails
+          productId={id}
           product={product}
           relatedProducts={relatedProducts}
           discount={discount}

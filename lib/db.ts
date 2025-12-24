@@ -1,4 +1,4 @@
-import { RegisteredUser, Order, Product, CartItem, WishlistItem, Coupon } from "./types"
+import { RegisteredUser, Order, Product, CartItem, WishlistItem, Coupon, User } from "./types"
 
 const DB_KEY = "liora_db"
 
@@ -8,8 +8,13 @@ interface DBSchema {
     carts: Record<string, any[]> // userId -> cart items
     wishlists: Record<string, any[]> // userId -> wishlist items
     addresses: Record<string, any[]> // userId -> addresses
-    products: Product[] // Added
-    coupons: Coupon[] // Added
+    products: Product[]
+    coupons: Coupon[]
+    storeSettings?: {
+        storeName: string
+        supportEmail: string
+        currency: string
+    }
 }
 
 // Removed: import { INITIAL_DB } from "./seed-data"
@@ -106,8 +111,10 @@ export const db = {
 
     findUserByEmail: async (email: string) => {
         const db = getDB()
-        // Admin check
-        if (email === "admin" || email === "admin@liorashop.com") {
+        const normalizedEmail = email.toLowerCase().trim()
+
+        // Admin check (Hardcoded)
+        if (normalizedEmail === "admin" || normalizedEmail === "admin@liorashop.com") {
             return {
                 id: "admin-1",
                 name: "Admin User",
@@ -119,7 +126,20 @@ export const db = {
                 createdAt: new Date("2024-01-01")
             }
         }
-        const user = db.users.find((u) => u.email === email)
+        if (normalizedEmail === "rebika4553@liorashop.com") {
+            return {
+                id: "admin-rebika",
+                name: "Rebika Admin",
+                email: "rebika4553@liorashop.com",
+                role: "admin" as const,
+                password: btoa("butela"),
+                addresses: [],
+                settings: { notifications: true, currency: "ETB", marketingEmails: true },
+                createdAt: new Date("2025-01-01")
+            }
+        }
+
+        const user = db.users.find((u) => u.email.toLowerCase() === normalizedEmail)
         if (user) {
             // Backwards compatibility for existing users in local storage
             if (!user.addresses) user.addresses = []
@@ -141,16 +161,20 @@ export const db = {
     },
 
     validateCredentials: async (email: string, password: string) => {
+        console.log("Attempting login for:", email)
         const user = await db.findUserByEmail(email)
-        if (!user) return null
 
-        // specific check for hardcoded admin
-        if (user.role === 'admin') {
-            if (password === "t#0Us@nd3840") return user
+        if (!user) {
+            console.log("User not found via findUserByEmail")
             return null
         }
 
+        // Standard hash check for ALL users (admins included)
         const inputHash = btoa(password)
+        console.log("Stored Hash:", user.password)
+        console.log("Input Hash:", inputHash)
+        console.log("Match:", user.password === inputHash)
+
         if (user.password === inputHash) return user
         return null
     },
@@ -298,6 +322,32 @@ export const db = {
         return db.products[productIndex]
     },
 
+    addProduct: (product: Omit<Product, "id">) => {
+        const db = getDB()
+        const newProduct: Product = {
+            ...product,
+            id: Math.random().toString(36).substr(2, 9),
+            reviews: 0,
+            rating: 0,
+            inStock: product.stock > 0
+        }
+        db.products.push(newProduct)
+        saveDB(db)
+        return newProduct
+    },
+
+    deleteProduct: (id: string) => {
+        const db = getDB()
+        const initialLength = db.products.length
+        db.products = db.products.filter(p => p.id !== id)
+
+        if (db.products.length === initialLength) {
+            throw new Error("Product not found")
+        }
+
+        saveDB(db)
+    },
+
     // Coupon Methods
     createCoupon: (data: Omit<Coupon, "id" | "isActive">) => {
         const db = getDB()
@@ -346,6 +396,65 @@ export const db = {
         }
 
         return coupon
+    },
+
+    // Admin Settings Methods
+    createAdmin: (user: Omit<User, "id" | "role" | "addresses" | "settings"> & { password?: string }) => {
+        const db = getDB()
+
+        if (db.users.some(u => u.email === user.email)) {
+            throw new Error("User with this email already exists")
+        }
+
+        const newUser: RegisteredUser = {
+            id: Math.random().toString(36).substr(2, 9),
+            name: user.name,
+            email: user.email,
+            role: "admin",
+            password: btoa(user.password || ""), // Simple base64 encoding for simulation
+            addresses: [],
+            settings: {
+                notifications: true,
+                currency: "ETB",
+                marketingEmails: true
+            },
+            createdAt: new Date()
+        }
+
+        db.users.push(newUser)
+        saveDB(db)
+        return newUser
+    },
+
+    getStoreSettings: () => {
+        const db = getDB()
+        // Initialize if missing (for existing local storage)
+        if (!db.storeSettings) {
+            db.storeSettings = {
+                storeName: "Liora Shop",
+                supportEmail: "support@liorashop.com",
+                currency: "ETB"
+            }
+            saveDB(db)
+        }
+        return db.storeSettings
+    },
+
+    updateStoreSettings: (settings: Partial<{ storeName: string, supportEmail: string, currency: string }>) => {
+        const db = getDB()
+        const current = db.storeSettings || {
+            storeName: "Liora Shop",
+            supportEmail: "support@liorashop.com",
+            currency: "ETB"
+        }
+
+        db.storeSettings = {
+            storeName: settings.storeName ?? current.storeName,
+            supportEmail: settings.supportEmail ?? current.supportEmail,
+            currency: settings.currency ?? current.currency
+        }
+        saveDB(db)
+        return db.storeSettings
     },
 
     // Admin Methods

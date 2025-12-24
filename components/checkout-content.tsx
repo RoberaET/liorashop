@@ -25,6 +25,7 @@ import type { Order } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
 import { db } from "@/lib/db"
 import { createOrderAction } from "@/app/actions/order"
+import { sendTelegramNotification } from "@/app/actions/telegram"
 import { useLanguage } from "@/lib/language-context"
 
 
@@ -210,6 +211,9 @@ export function CheckoutContent() {
         // ALSO Save to DB for persistence simulation
         db.saveOrder(user.id, result.order)
 
+        // Send Telegram Notification
+        await sendTelegramNotification(result.order)
+
       } else {
         // Guest checkout (fallback to local state for now, or implement guest server action later)
         // For now, let's just update local store effectively mocking it for guests
@@ -225,6 +229,9 @@ export function CheckoutContent() {
         addOrder(newOrder)
         // Also save to DB for guests (simulated backend)
         db.saveOrder("guest", newOrder)
+
+        // Send Telegram Notification
+        await sendTelegramNotification(newOrder)
       }
 
       clearCart()

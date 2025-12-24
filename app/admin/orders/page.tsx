@@ -100,6 +100,7 @@ export default function AdminOrdersPage() {
                             <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Order ID</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Customer</TableHead>
                             <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Date</TableHead>
+                            <TableHead className="hidden md:table-cell text-slate-900 font-extrabold">Time</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Total</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Status</TableHead>
                             <TableHead className="text-slate-900 font-extrabold">Actions</TableHead>
@@ -129,6 +130,7 @@ export default function AdminOrdersPage() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell text-amber-800 font-semibold">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                                    <TableCell className="hidden md:table-cell text-slate-600 font-medium">{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TableCell>
                                     <TableCell className="text-emerald-700 font-extrabold">{formatPrice(order.total)}</TableCell>
                                     <TableCell>
                                         <Badge className={getStatusColor(order.status)}>
