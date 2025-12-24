@@ -51,6 +51,11 @@ export const metadata: Metadata = {
     description: "Discover curated fashion, beauty, and lifestyle products.",
     creator: "@liorashop",
   },
+  icons: {
+    icon: "/weblogo.png",
+    shortcut: "/weblogo.png",
+    apple: "/weblogo.png",
+  },
 }
 
 export const viewport: Viewport = {
