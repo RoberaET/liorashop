@@ -2,6 +2,8 @@
   "name": "my-v0-project",
   "version": "0.1.0",
   "private": true,
+  "author": "RoberaET <robera4553@gmail.com>",
+  "license": "UNLICENSED",
   "scripts": {
     "build": "npx prisma generate && next build",
     "dev": "next dev",
