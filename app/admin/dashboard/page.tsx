@@ -3,28 +3,99 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatPrice } from "@/lib/utils"
 import { Package, ShoppingCart, TrendingUp } from "lucide-react"
-import { getAdminDashboardStatsAction } from "@/app/actions/admin"
+import { db } from "@/lib/db"
 import { useEffect, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis } from "recharts"
+
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState<any>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        async function loadStats() {
+        // Calculate stats client-side from Simulated DB
+        const calculateStats = () => {
             try {
-                const { stats } = await getAdminDashboardStatsAction()
-                if (stats) setStats(stats)
+                const allOrders = db.getAllOrders()
+                const allProducts = db.getAllProducts()
+
+                const totalRevenue = allOrders.reduce((sum, order) => sum + order.total, 0)
+                const totalOrders = allOrders.length
+                const totalProducts = allProducts.length
+                const lowStockCount = allProducts.filter(p => p.stock < 10).length
+
+                // Recent Orders
+                const recentOrders = allOrders.slice(0, 5).map(order => ({
+                    id: order.id,
+                    customerName: order.shippingAddress.fullName,
+                    customerEmail: order.shippingAddress.email,
+                    shippingAddress: order.shippingAddress,
+                    total: order.total,
+                    status: order.status,
+                    createdAt: new Date(order.createdAt)
+                }))
+
+                // Sales Data (Last 7 Days)
+                const salesMap = new Map<string, number>()
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date()
+                    date.setDate(date.getDate() - i)
+                    const dateStr = date.toISOString().split('T')[0]
+                    salesMap.set(dateStr, 0)
+                }
+
+                allOrders.forEach(order => {
+                    const dateStr = new Date(order.createdAt).toISOString().split('T')[0]
+                    if (salesMap.has(dateStr)) {
+                        salesMap.set(dateStr, (salesMap.get(dateStr) || 0) + order.total)
+                    }
+                })
+
+                const salesData = Array.from(salesMap.entries())
+                    .map(([date, total]) => ({ date, total }))
+                    .sort((a, b) => a.date.localeCompare(b.date))
+
+                // Category Data
+                const categoryCounts: Record<string, number> = {}
+                allProducts.forEach(p => {
+                    categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1
+                })
+                const categoryData = Object.entries(categoryCounts).map(([category, count]) => ({
+                    category,
+                    _count: { id: count }
+                }))
+
+                // Order Status Data
+                // (Not strictly used in the UI shown above but good to have parity)
+                const statusCounts: Record<string, number> = {}
+                allOrders.forEach(o => {
+                    statusCounts[o.status] = (statusCounts[o.status] || 0) + 1
+                })
+                const orderStatusData = Object.entries(statusCounts).map(([status, count]) => ({
+                    status,
+                    _count: { id: count }
+                }))
+
+                setStats({
+                    totalRevenue,
+                    totalOrders,
+                    totalProducts,
+                    lowStockCount,
+                    recentOrders,
+                    salesData,
+                    categoryData,
+                    orderStatusData
+                })
             } catch (error) {
-                console.error("Failed to load dashboard stats", error)
+                console.error("Failed to calculate dashboard stats", error)
             } finally {
                 setLoading(false)
             }
         }
-        loadStats()
+
+        calculateStats()
     }, [])
 
     if (loading) {

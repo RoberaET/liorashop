@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from "next/link"
@@ -9,7 +10,9 @@ import {
     Users,
     Settings,
     LogOut,
-    TicketPercent
+    TicketPercent,
+    Package, // Added back
+    ShoppingCart // Added back
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

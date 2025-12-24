@@ -13,7 +13,8 @@ interface DBSchema {
 }
 
 // Removed: import { INITIAL_DB } from "./seed-data"
-import { INITIAL_PRODUCTS } from "./seed-data" // Added import for INITIAL_PRODUCTS
+// Removed: import { INITIAL_DB } from "./seed-data"
+import { products as INITIAL_PRODUCTS } from "./data" // Added import for INITIAL_PRODUCTS
 
 const INITIAL_DB: DBSchema = { // Defined INITIAL_DB here
     users: [],
@@ -43,6 +44,13 @@ const getDB = (): DBSchema => {
     if (!existingDB.wishlists) existingDB.wishlists = {}
     if (!existingDB.addresses) existingDB.addresses = {}
     if (!existingDB.coupons) existingDB.coupons = []
+    if (!existingDB.products) existingDB.products = INITIAL_PRODUCTS
+
+    // Also update existing products if needed aka "simple sync" for development
+    // In a real app we wouldn't overwrite user changes, but here we want latest code changes to reflect
+    if (existingDB.products.length === 0 && INITIAL_PRODUCTS.length > 0) {
+        existingDB.products = INITIAL_PRODUCTS
+    }
 
     let modified = false
 
@@ -272,72 +280,86 @@ export const db = {
         return db.products[productIndex]
     },
 
-    saveDB(db)
+    updateProduct: (id: string, updates: Partial<Product>) => {
+        const db = getDB()
+        const productIndex = db.products.findIndex(p => p.id === id)
+
+        if (productIndex === -1) throw new Error("Product not found")
+
+        // Update fields
+        db.products[productIndex] = { ...db.products[productIndex], ...updates }
+
+        // Auto-update inStock based on stock count ONLY if inStock is NOT explicitly provided
+        if (updates.stock !== undefined && updates.inStock === undefined) {
+            db.products[productIndex].inStock = db.products[productIndex].stock > 0
+        }
+
+        saveDB(db)
         return db.products[productIndex]
-},
+    },
 
     // Coupon Methods
     createCoupon: (data: Omit<Coupon, "id" | "isActive">) => {
         const db = getDB()
-if (db.coupons.some(c => c.code === data.code)) {
-    throw new Error("Coupon code already exists")
-}
-const newCoupon: Coupon = {
-    ...data,
-    id: Math.random().toString(36).substr(2, 9),
-    isActive: true
-}
-db.coupons.push(newCoupon)
-saveDB(db)
-return newCoupon
+        if (db.coupons.some(c => c.code === data.code)) {
+            throw new Error("Coupon code already exists")
+        }
+        const newCoupon: Coupon = {
+            ...data,
+            id: Math.random().toString(36).substr(2, 9),
+            isActive: true
+        }
+        db.coupons.push(newCoupon)
+        saveDB(db)
+        return newCoupon
     },
 
-deleteCoupon: (id: string) => {
-    const db = getDB()
-    db.coupons = db.coupons.filter(c => c.id !== id)
-    saveDB(db)
-},
+    deleteCoupon: (id: string) => {
+        const db = getDB()
+        db.coupons = db.coupons.filter(c => c.id !== id)
+        saveDB(db)
+    },
 
     getAllCoupons: () => {
         const db = getDB()
         return db.coupons || []
     },
 
-        validateCoupon: (code: string) => {
-            const db = getDB()
-            const coupon = db.coupons.find(c => c.code === code && c.isActive)
+    validateCoupon: (code: string) => {
+        const db = getDB()
+        const coupon = db.coupons.find(c => c.code === code && c.isActive)
 
-            if (!coupon) {
-                throw new Error("Invalid coupon code")
-            }
+        if (!coupon) {
+            throw new Error("Invalid coupon code")
+        }
 
-            const now = new Date()
-            const start = new Date(coupon.startDate)
-            const end = new Date(coupon.endDate)
+        const now = new Date()
+        const start = new Date(coupon.startDate)
+        const end = new Date(coupon.endDate)
 
-            if (now < start) {
-                throw new Error("Coupon is not active yet")
-            }
+        if (now < start) {
+            throw new Error("Coupon is not active yet")
+        }
 
-            if (now > end) {
-                throw new Error("Coupon has expired")
-            }
+        if (now > end) {
+            throw new Error("Coupon has expired")
+        }
 
-            return coupon
-        },
+        return coupon
+    },
 
-            // Admin Methods
-            getAllUsers: () => {
-                const db = getDB()
-                return db.users
-            },
+    // Admin Methods
+    getAllUsers: () => {
+        const db = getDB()
+        return db.users
+    },
 
-                getAllOrders: () => {
-                    const db = getDB()
-                    const allOrders: (Order & { userId: string })[] = []
-                    for (const [userId, userOrders] of Object.entries(db.orders)) {
-                        allOrders.push(...userOrders.map(o => ({ ...o, userId })))
-                    }
-                    return allOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                }
+    getAllOrders: () => {
+        const db = getDB()
+        const allOrders: (Order & { userId: string })[] = []
+        for (const [userId, userOrders] of Object.entries(db.orders)) {
+            allOrders.push(...userOrders.map(o => ({ ...o, userId })))
+        }
+        return allOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    }
 }

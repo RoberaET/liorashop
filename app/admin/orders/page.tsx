@@ -21,7 +21,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { useMounted } from "@/hooks/use-mounted"
-import { getAllOrdersAction, updateOrderStatusAction, deleteOrderAction } from "@/app/actions/admin"
+import { db } from "@/lib/db"
 import { Order } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { useToast } from "@/hooks/use-toast"
@@ -36,11 +36,10 @@ export default function AdminOrdersPage() {
 
     useEffect(() => {
         const loadOrders = async () => {
-            const result = await getAllOrdersAction()
-            if (result.orders) {
-                // @ts-ignore
-                setOrders(result.orders)
-            }
+            // Updated to use Simulated DB
+            const allOrders = db.getAllOrders()
+            // @ts-ignore
+            setOrders(allOrders)
             setIsLoading(false)
         }
         loadOrders()
@@ -50,15 +49,8 @@ export default function AdminOrdersPage() {
         const order = orders.find(o => o.id === orderId)
         if (!order) return
 
-        const result = await updateOrderStatusAction(orderId, status)
-        if (result.error) {
-            toast({
-                title: "Error",
-                description: "Failed to update status",
-                variant: "destructive"
-            })
-            return
-        }
+        // Update in Simulated DB
+        db.updateOrderStatus(order.userId, orderId, status)
 
         setOrders(orders.map((order) => (order.id === orderId ? { ...order, status } : order)))
         toast({
@@ -68,15 +60,12 @@ export default function AdminOrdersPage() {
     }
 
     const handleDeleteOrder = async (orderId: string) => {
-        const result = await deleteOrderAction(orderId)
-        if (result.error) {
-            toast({
-                title: "Error",
-                description: "Failed to delete order",
-                variant: "destructive"
-            })
-            return
+        const order = orders.find(o => o.id === orderId)
+        if (order) {
+            // Delete from Simulated DB
+            db.deleteOrder(order.userId, orderId)
         }
+
         setOrders(orders.filter(o => o.id !== orderId))
         toast({
             title: "Order Deleted",

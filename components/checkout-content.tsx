@@ -119,7 +119,6 @@ export function CheckoutContent() {
   }
 
   const subtotal = getCartTotal()
-  const subtotal = getCartTotal()
   const shippingCost = shippingMethod === "express" ? 300 : 0
 
   let discountAmount = 0
@@ -203,9 +202,14 @@ export function CheckoutContent() {
         // Use Server Action for logged in users
         const result = await createOrderAction(user.id, cart, total, shippingAddress)
         if (result.error || !result.order) throw new Error(result.error)
+
         // Frontend state update can use the returned order
         const addOrder = useStore.getState().addOrder
         addOrder(result.order)
+
+        // ALSO Save to DB for persistence simulation
+        db.saveOrder(user.id, result.order)
+
       } else {
         // Guest checkout (fallback to local state for now, or implement guest server action later)
         // For now, let's just update local store effectively mocking it for guests
