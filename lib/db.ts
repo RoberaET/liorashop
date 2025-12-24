@@ -384,8 +384,13 @@ export const db = {
         }
 
         const now = new Date()
+        // Reset time to ensure we compare just dates or allow full day usage
         const start = new Date(coupon.startDate)
+        start.setHours(0, 0, 0, 0)
+
         const end = new Date(coupon.endDate)
+        // Set end date to end of day to include the day of expiration
+        end.setHours(23, 59, 59, 999)
 
         if (now < start) {
             throw new Error("Coupon is not active yet")
