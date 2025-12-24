@@ -2,7 +2,15 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Users } from "lucide-react"
+import {
+    LayoutDashboard,
+    ShoppingBag,
+    Store,
+    Users,
+    Settings,
+    LogOut,
+    TicketPercent
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
@@ -36,6 +44,16 @@ export function AdminSidebar({ className }: { className?: string }) {
             href: "/admin/customers",
             label: "Customers",
             icon: Users,
+        },
+        {
+            href: "/admin/coupons",
+            label: "Coupons",
+            icon: TicketPercent,
+        },
+        {
+            href: "/admin/settings",
+            label: "Settings",
+            icon: Settings,
         },
     ]
 

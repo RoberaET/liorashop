@@ -1,4 +1,4 @@
-import { RegisteredUser, Order, Product, CartItem, WishlistItem } from "./types"
+import { RegisteredUser, Order, Product, CartItem, WishlistItem, Coupon } from "./types"
 
 const DB_KEY = "liora_db"
 
@@ -8,12 +8,25 @@ interface DBSchema {
     carts: Record<string, any[]> // userId -> cart items
     wishlists: Record<string, any[]> // userId -> wishlist items
     addresses: Record<string, any[]> // userId -> addresses
+    products: Product[] // Added
+    coupons: Coupon[] // Added
 }
 
-import { INITIAL_DB } from "./seed-data"
+// Removed: import { INITIAL_DB } from "./seed-data"
+import { INITIAL_PRODUCTS } from "./seed-data" // Added import for INITIAL_PRODUCTS
+
+const INITIAL_DB: DBSchema = { // Defined INITIAL_DB here
+    users: [],
+    orders: {},
+    carts: {},
+    wishlists: {},
+    addresses: {},
+    products: INITIAL_PRODUCTS, // Added
+    coupons: [] // Added
+}
 
 const getDB = (): DBSchema => {
-    if (typeof window === "undefined") return { users: [], orders: {}, carts: {}, wishlists: {}, addresses: {} }
+    if (typeof window === "undefined") return { users: [], orders: {}, carts: {}, wishlists: {}, addresses: {}, products: [], coupons: [] } // Updated default return for server-side
     const stored = localStorage.getItem(DB_KEY)
     if (!stored) {
         localStorage.setItem(DB_KEY, JSON.stringify(INITIAL_DB))
@@ -29,6 +42,7 @@ const getDB = (): DBSchema => {
     if (!existingDB.carts) existingDB.carts = {}
     if (!existingDB.wishlists) existingDB.wishlists = {}
     if (!existingDB.addresses) existingDB.addresses = {}
+    if (!existingDB.coupons) existingDB.coupons = []
 
     let modified = false
 
@@ -258,18 +272,72 @@ export const db = {
         return db.products[productIndex]
     },
 
-    // Admin Methods
-    getAllUsers: () => {
+    saveDB(db)
+        return db.products[productIndex]
+},
+
+    // Coupon Methods
+    createCoupon: (data: Omit<Coupon, "id" | "isActive">) => {
         const db = getDB()
-        return db.users
+if (db.coupons.some(c => c.code === data.code)) {
+    throw new Error("Coupon code already exists")
+}
+const newCoupon: Coupon = {
+    ...data,
+    id: Math.random().toString(36).substr(2, 9),
+    isActive: true
+}
+db.coupons.push(newCoupon)
+saveDB(db)
+return newCoupon
     },
 
-    getAllOrders: () => {
+deleteCoupon: (id: string) => {
+    const db = getDB()
+    db.coupons = db.coupons.filter(c => c.id !== id)
+    saveDB(db)
+},
+
+    getAllCoupons: () => {
         const db = getDB()
-        const allOrders: (Order & { userId: string })[] = []
-        for (const [userId, userOrders] of Object.entries(db.orders)) {
-            allOrders.push(...userOrders.map(o => ({ ...o, userId })))
-        }
-        return allOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    }
+        return db.coupons || []
+    },
+
+        validateCoupon: (code: string) => {
+            const db = getDB()
+            const coupon = db.coupons.find(c => c.code === code && c.isActive)
+
+            if (!coupon) {
+                throw new Error("Invalid coupon code")
+            }
+
+            const now = new Date()
+            const start = new Date(coupon.startDate)
+            const end = new Date(coupon.endDate)
+
+            if (now < start) {
+                throw new Error("Coupon is not active yet")
+            }
+
+            if (now > end) {
+                throw new Error("Coupon has expired")
+            }
+
+            return coupon
+        },
+
+            // Admin Methods
+            getAllUsers: () => {
+                const db = getDB()
+                return db.users
+            },
+
+                getAllOrders: () => {
+                    const db = getDB()
+                    const allOrders: (Order & { userId: string })[] = []
+                    for (const [userId, userOrders] of Object.entries(db.orders)) {
+                        allOrders.push(...userOrders.map(o => ({ ...o, userId })))
+                    }
+                    return allOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                }
 }

@@ -27,9 +27,7 @@ import { db } from "@/lib/db"
 import { createOrderAction } from "@/app/actions/order"
 import { useLanguage } from "@/lib/language-context"
 
-const COUPONS: { [key: string]: number } = {
-  "LOVE": 0.10,
-}
+
 
 export function CheckoutContent() {
   const router = useRouter()
@@ -86,17 +84,22 @@ export function CheckoutContent() {
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null)
 
   // Coupon state
+  // Coupon state
   const [couponCode, setCouponCode] = useState("")
-  const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null)
+  const [appliedDiscount, setAppliedDiscount] = useState<{ type: 'percentage' | 'fixed', value: number, code: string } | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
 
   const handleApplyCoupon = () => {
-    const discount = COUPONS[couponCode.toUpperCase()]
-    if (discount) {
-      setAppliedDiscount(discount)
+    try {
+      const coupon = db.validateCoupon(couponCode.toUpperCase())
+      setAppliedDiscount({
+        type: coupon.discountType,
+        value: coupon.discountValue,
+        code: coupon.code
+      })
       setCouponError(null)
-    } else {
-      setCouponError(t.checkout.couponError)
+    } catch (error: any) {
+      setCouponError(error.message)
       setAppliedDiscount(null)
     }
   }
@@ -116,9 +119,19 @@ export function CheckoutContent() {
   }
 
   const subtotal = getCartTotal()
+  const subtotal = getCartTotal()
   const shippingCost = shippingMethod === "express" ? 300 : 0
-  const discountAmount = appliedDiscount ? subtotal * appliedDiscount : 0
-  const total = subtotal + shippingCost - discountAmount
+
+  let discountAmount = 0
+  if (appliedDiscount) {
+    if (appliedDiscount.type === "percentage") {
+      discountAmount = subtotal * appliedDiscount.value
+    } else {
+      discountAmount = appliedDiscount.value
+    }
+  }
+
+  const total = Math.max(0, subtotal + shippingCost - discountAmount)
 
   if (cart.length === 0) {
     return (
@@ -571,7 +584,10 @@ export function CheckoutContent() {
                   </div>
                   {appliedDiscount && (
                     <div className="flex justify-between text-primary">
-                      <span>{t.checkout.discount} ({appliedDiscount * 100}%)</span>
+                      <span>
+                        {t.checkout.discount}
+                        {appliedDiscount.type === 'percentage' ? ` (${(appliedDiscount.value * 100).toFixed(0)}%)` : ''}
+                      </span>
                       <span>-{formatPrice(discountAmount)}</span>
                     </div>
                   )}

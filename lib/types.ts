@@ -18,8 +18,19 @@ export interface Product {
 export interface Category {
   id: string
   name: string
-  description?: string
-  image?: string
+  icon: string
+  count: number
+  image: string
+}
+
+export interface Coupon {
+  id: string
+  code: string
+  discountType: "percentage" | "fixed"
+  discountValue: number // e.g., 0.10 for 10% or 100 for 100 ETB
+  startDate: string
+  endDate: string
+  isActive: boolean
 }
 
 export interface CartItem {
