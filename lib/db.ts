@@ -224,6 +224,40 @@ export const db = {
         saveDB(db)
     },
 
+    // Product Methods
+    getAllProducts: () => {
+        const db = getDB()
+        return db.products
+    },
+
+    getProduct: (id: string) => {
+        const db = getDB()
+        return db.products.find(p => p.id === id)
+    },
+
+    updateProductStock: (id: string, quantityToDeduct: number) => {
+        const db = getDB()
+        const productIndex = db.products.findIndex(p => p.id === id)
+
+        if (productIndex === -1) throw new Error("Product not found")
+
+        const product = db.products[productIndex]
+
+        if (product.stock < quantityToDeduct) {
+            throw new Error(`Insufficient stock for ${product.name}. Only ${product.stock} left.`)
+        }
+
+        db.products[productIndex].stock -= quantityToDeduct
+
+        // Update inStock status if needed
+        if (db.products[productIndex].stock === 0) {
+            db.products[productIndex].inStock = false
+        }
+
+        saveDB(db)
+        return db.products[productIndex]
+    },
+
     // Admin Methods
     getAllUsers: () => {
         const db = getDB()

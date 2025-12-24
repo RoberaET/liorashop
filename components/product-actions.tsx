@@ -8,6 +8,8 @@ import type { Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useFlyAnimation } from "@/components/fly-animation-provider"
 
+import { db } from "@/lib/db"
+
 interface ProductActionsProps {
   product: Product
 }
@@ -15,6 +17,8 @@ interface ProductActionsProps {
 export function ProductActions({ product }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
+  // Local stock state to track real-time changes
+  const [currentStock, setCurrentStock] = useState(product.stock)
 
   const addToCart = useStore((state) => state.addToCart)
   const addToWishlist = useStore((state) => state.addToWishlist)
@@ -26,7 +30,12 @@ export function ProductActions({ product }: ProductActionsProps) {
 
   useEffect(() => {
     setIsMounted(true)
-  }, [])
+    // Fetch latest stock from DB to ensure accuracy
+    const dbProduct = db.getProduct(product.id)
+    if (dbProduct) {
+      setCurrentStock(dbProduct.stock)
+    }
+  }, [product.id])
 
   const inWishlist = isMounted ? wishlist.some((item) => item.product.id === product.id) : false
 
@@ -91,7 +100,8 @@ export function ProductActions({ product }: ProductActionsProps) {
             variant="ghost"
             size="icon"
             className="h-10 w-10 rounded-none"
-            onClick={() => setQuantity((q) => q + 1)}
+            onClick={() => setQuantity((q) => Math.min(currentStock, q + 1))}
+            disabled={quantity >= currentStock}
           >
             <Plus className="h-4 w-4" />
             <span className="sr-only">Increase quantity</span>
@@ -101,7 +111,7 @@ export function ProductActions({ product }: ProductActionsProps) {
 
       {/* Action Buttons */}
       <div className="flex gap-4">
-        <Button size="lg" className="flex-1 gap-2" onClick={handleAddToCart} disabled={!product.inStock || addedToCart}>
+        <Button size="lg" className="flex-1 gap-2" onClick={handleAddToCart} disabled={currentStock === 0 || addedToCart}>
           {addedToCart ? (
             <>
               <Check className="h-5 w-5" />
@@ -110,7 +120,7 @@ export function ProductActions({ product }: ProductActionsProps) {
           ) : (
             <>
               <ShoppingBag className="h-5 w-5" />
-              {product.inStock ? "Add to Cart" : "Out of Stock"}
+              {currentStock > 0 ? (currentStock < 5 ? `Only ${currentStock} left` : "Add to Cart") : "Out of Stock"}
             </>
           )}
         </Button>

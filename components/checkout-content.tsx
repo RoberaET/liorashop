@@ -23,6 +23,7 @@ import { useStore } from "@/lib/store"
 import { formatPrice } from "@/lib/utils"
 import type { Order } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
+import { db } from "@/lib/db"
 import { createOrderAction } from "@/app/actions/order"
 import { useLanguage } from "@/lib/language-context"
 
@@ -174,6 +175,17 @@ export function CheckoutContent() {
     }
 
     try {
+      // Validation: Check stock before finalizing
+      try {
+        for (const item of cart) {
+          db.updateProductStock(item.product.id, item.quantity)
+        }
+      } catch (stockError: any) {
+        alert(stockError.message) // Simple alert for now, could be toast
+        setIsProcessing(false)
+        return
+      }
+
       if (user) {
         // Use Server Action for logged in users
         const result = await createOrderAction(user.id, cart, total, shippingAddress)
@@ -194,6 +206,8 @@ export function CheckoutContent() {
         }
         const addOrder = useStore.getState().addOrder
         addOrder(newOrder)
+        // Also save to DB for guests (simulated backend)
+        db.saveOrder("guest", newOrder)
       }
 
       clearCart()
@@ -201,6 +215,7 @@ export function CheckoutContent() {
 
     } catch (error) {
       console.error("Checkout error:", error)
+      setIsProcessing(false)
       // handle error
     }
 

@@ -46,6 +46,26 @@ export const useStore = create<StoreState>((set, get) => ({
   addToCart: (product, quantity = 1) => {
     const cart = get().cart
     const existingItem = cart.find((item) => item.product.id === product.id)
+    const currentQty = existingItem ? existingItem.quantity : 0
+    const totalQty = currentQty + quantity
+
+    if (totalQty > product.stock) {
+      // You can add a toast here if you move toast logic to store or handle in UI
+      // For now, we will max out at stock
+      const allowedQty = product.stock - currentQty
+      if (allowedQty <= 0) return // Cannot add more
+
+      if (existingItem) {
+        set({
+          cart: cart.map((item) =>
+            item.product.id === product.id ? { ...item, quantity: item.quantity + allowedQty } : item
+          )
+        })
+      } else {
+        set({ cart: [...cart, { product, quantity: allowedQty }] })
+      }
+      return
+    }
 
     if (existingItem) {
       set({
