@@ -11,19 +11,17 @@ export async function FeaturedProducts() {
   if (!featuredProducts) return null
 
   return (
-    <section className="py-16 md:py-24 bg-primary text-primary-foreground">
+    <section className="py-20 md:py-28 bg-background text-foreground">
       <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-12">
+        <div className="flex items-center justify-between mb-12 border-b border-border/40 pb-4">
           <div>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Bestsellers</h2>
-            <p className="text-primary-foreground/80 max-w-xl">Our most loved products, chosen by customers like you</p>
+            <h2 className="text-2xl md:text-3xl font-serif font-normal mb-2 tracking-tight">New Arrivals</h2>
+            <p className="text-sm text-muted-foreground font-light">We picked the best for you</p>
           </div>
-          <Button variant="ghost" asChild className="hidden md:flex gap-2">
-            <Link href="/category/clothes">
-              View All
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="flex gap-4">
+            <span className="text-sm font-medium border-b border-black pb-1 cursor-pointer">New Arrivals</span>
+            <span className="text-sm text-muted-foreground cursor-pointer hover:text-black transition-colors">Best Sellers</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

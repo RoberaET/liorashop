@@ -35,32 +35,25 @@ const categories = [
 
 export function CategorySection() {
   return (
-    <section id="categories" className="py-16 md:py-24 bg-secondary">
+    <section id="categories" className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Shop by Category</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Explore our carefully curated collections designed to elevate your everyday style
-          </p>
+          {/* Minimal Header */}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="flex overflow-x-auto pb-8 gap-8 md:gap-12 justify-start md:justify-center scrollbar-hide">
           {categories.map((category) => {
-            const Icon = category.icon
             return (
-              <Link key={category.id} href={`/category/${category.id}`}>
-                <Card className="group relative overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 h-64 md:h-80">
+              <Link key={category.id} href={`/category/${category.id}`} className="group flex flex-col items-center flex-shrink-0">
+                <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full overflow-hidden mb-4 border border-border/50 group-hover:border-black/50 transition-colors duration-300">
                   <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
                     style={{ backgroundImage: `url(${category.image})` }}
                   />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 text-white">
-                    <Icon className="h-10 w-10 mb-3 opacity-90" />
-                    <h3 className="font-serif text-2xl font-bold mb-2">{category.name}</h3>
-                    <p className="text-sm font-medium opacity-90 tracking-wide uppercase">{category.description}</p>
-                  </div>
-                </Card>
+                  {/* Light overlay on hover */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                </div>
+                <h3 className="font-sans text-sm font-medium tracking-wide uppercase text-center group-hover:text-black/70 transition-colors">{category.name}</h3>
               </Link>
             )
           })}

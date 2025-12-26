@@ -136,13 +136,13 @@ export function ProductCard({ product }: ProductCardProps) {
       whileHover={{ y: -10 }}
       transition={{ duration: 0.4 }}
     >
-      <Card
-        className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-300"
+      <div
+        className="group relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <Link href={`/product/${product.id}`}>
-          <div className="relative aspect-square overflow-hidden bg-muted">
+          <div className="relative aspect-[3/4] overflow-hidden bg-[#F5F5F7] rounded-lg mb-4">
             {/* Image Slider */}
             <div
               className="flex h-full w-full transition-transform duration-700 ease-in-out"
@@ -154,7 +154,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     src={img || "/placeholder.svg"}
                     alt={product.name}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
@@ -164,18 +164,14 @@ export function ProductCard({ product }: ProductCardProps) {
             {/* Badges */}
             <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
               {discount > 0 && (
-                <Badge variant="destructive" className="text-xs">
+                <Badge variant="destructive" className="text-[10px] px-2 py-0.5 h-auto">
                   -{discount}%
                 </Badge>
               )}
               {product.tags?.includes("bestseller") && (
-                <Badge className="bg-primary text-primary-foreground text-xs">Bestseller</Badge>
-              )}
-              {product.tags?.includes("luxury") && (
-                <Badge className="bg-zinc-900 text-white text-xs">Luxury</Badge>
+                <Badge className="bg-white text-black text-[10px] px-2 py-0.5 h-auto border-none shadow-sm">Bestseller</Badge>
               )}
             </div>
-
 
             <TooltipProvider>
               <Tooltip delayDuration={100}>
@@ -184,12 +180,12 @@ export function ProductCard({ product }: ProductCardProps) {
                     variant="secondary"
                     size="icon"
                     className={cn(
-                      "absolute top-3 right-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10",
-                      inWishlist && "opacity-100",
+                      "absolute top-3 right-3 rounded-full h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-white/90 hover:bg-white text-black",
+                      inWishlist && "opacity-100 text-red-500",
                     )}
                     onClick={handleWishlistToggle}
                   >
-                    <Heart className={cn("h-4 w-4 transition-colors", inWishlist && "fill-destructive text-destructive")} />
+                    <Heart className={cn("h-4 w-4 transition-colors", inWishlist && "fill-current")} />
                     <span className="sr-only">{inWishlist ? "Remove from wishlist" : "Add to wishlist"}</span>
                   </Button>
                 </TooltipTrigger>
@@ -200,36 +196,28 @@ export function ProductCard({ product }: ProductCardProps) {
             </TooltipProvider>
 
             {/* Quick Add Button */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10">
-              <Button className="w-full gap-2" onClick={handleAddToCart} disabled={!product.inStock}>
-                <ShoppingBag className="h-4 w-4" />
+            <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-10">
+              <Button className="w-full gap-2 rounded-full bg-white text-black hover:bg-white/90 shadow-md text-xs h-9" onClick={handleAddToCart} disabled={!product.inStock}>
+                <ShoppingBag className="h-3.5 w-3.5" />
                 {product.inStock ? "Add to Cart" : "Out of Stock"}
               </Button>
             </div>
           </div>
 
-          <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{product.category}</p>
-            <h3 className="font-medium text-foreground line-clamp-1 mb-2">{product.name}</h3>
-
-            {/* Rating */}
-            <div className="flex items-center gap-1 mb-2">
-              <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm text-muted-foreground">
-                {product.rating} ({product.reviews})
-              </span>
-            </div>
+          <div className="text-center">
+            <h3 className="font-medium text-foreground text-sm tracking-wide mb-1">{product.name}</h3>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">{product.category}</p>
 
             {/* Price */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2 text-sm">
               <span className="font-semibold text-foreground">{formatPrice(product.price)}</span>
               {product.originalPrice && (
-                <span className="text-sm text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
+                <span className="text-muted-foreground line-through text-xs">{formatPrice(product.originalPrice)}</span>
               )}
             </div>
-          </CardContent>
+          </div>
         </Link>
-      </Card>
+      </div>
     </motion.div>
   )
 
